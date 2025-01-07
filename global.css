@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.border-test {
+  border: 2px;
+  border-color: red;
+}
