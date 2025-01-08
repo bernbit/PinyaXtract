@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Svg, { G, Path, Defs, ClipPath, Rect } from "react-native-svg";
 import Animated, {
   useSharedValue,
-  useAnimatedStyle,
   useAnimatedProps,
   withRepeat,
   withTiming,
-  cancelAnimation,
 } from "react-native-reanimated";
 import useGlobal from "@/context/GlobalContext";
 
 const Gear = ({ width = 273, height = 213 }) => {
-  const { machineState } = useGlobal();
+  const { machineState, toggleMachineState } = useGlobal();
 
   const gearRotation = useSharedValue(0);
   const GearWheel = Animated.createAnimatedComponent(Path);
 
-  // Rotate gearOne continuously
+  //* useEffect for Gear Animation
   useEffect(() => {
     if (machineState) {
       gearRotation.value = 0; // Reset rotation
@@ -26,36 +24,36 @@ const Gear = ({ width = 273, height = 213 }) => {
         false,
       );
     } else {
-      gearRotation.value = withTiming(0, { duration: 200 }); // Smooth stop over 500ms
+      gearRotation.value = withTiming(0, { duration: 200 });
     }
   }, [machineState]);
 
   const gearOneAnimation = useAnimatedProps(() => ({
     transform: [
-      { translateX: 138.405 }, // Move pivot point to the origin
+      { translateX: 138.405 },
       { translateY: 148.238 },
-      { rotate: `${gearRotation.value}deg` }, // Rotate the gear
-      { translateX: -138.405 }, // Move pivot point back to its original position
+      { rotate: `${gearRotation.value}deg` },
+      { translateX: -138.405 },
       { translateY: -148.238 },
     ],
   }));
 
   const gearTwoAnimation = useAnimatedProps(() => ({
     transform: [
-      { translateX: 59.31 }, // Move pivot point to the origin
+      { translateX: 59.31 },
       { translateY: 59.43 },
-      { rotate: `${gearRotation.value}deg` }, // Rotate the gear
-      { translateX: -59.31 }, // Move pivot point back to its original position
+      { rotate: `${gearRotation.value}deg` },
+      { translateX: -59.31 },
       { translateY: -59.43 },
     ],
   }));
 
   const gearThreeAnimation = useAnimatedProps(() => ({
     transform: [
-      { translateX: 213.629 }, // Move pivot point to the origin
+      { translateX: 213.629 },
       { translateY: 59.446 },
-      { rotate: `${gearRotation.value}deg` }, // Rotate the gear
-      { translateX: -213.629 }, // Move pivot point back to its original position
+      { rotate: `${gearRotation.value}deg` },
+      { translateX: -213.629 },
       { translateY: -59.446 },
     ],
   }));
@@ -67,6 +65,7 @@ const Gear = ({ width = 273, height = 213 }) => {
       viewBox="0 0 273 213"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      onPress={toggleMachineState}
     >
       <G clipPath="url(#clip0_282_293)">
         <G>

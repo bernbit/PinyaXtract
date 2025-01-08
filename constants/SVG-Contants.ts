@@ -7,6 +7,7 @@ import Compress from "@/assets/svg/Compress";
 import Gear from "@/assets/svg/Gear";
 import Heater from "@/assets/svg/Heater";
 import Fan from "@/assets/svg/Fan";
+import Roller from "@/assets/svg/Roller";
 
 const SVG = {
   Logo,
@@ -18,6 +19,7 @@ const SVG = {
   Gear,
   Heater,
   Fan,
+  Roller,
 };
 
 export default SVG;

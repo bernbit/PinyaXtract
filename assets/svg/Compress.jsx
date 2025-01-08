@@ -1,5 +1,6 @@
-import * as React from "react";
+import React from "react";
 import Svg, { G, Path, Defs, ClipPath } from "react-native-svg";
+
 import useGlobal from "@/context/GlobalContext";
 
 const Compress = ({ width = 68, height = 87 }) => {
@@ -8,7 +9,7 @@ const Compress = ({ width = 68, height = 87 }) => {
   const level = Math.max(1, Math.min(100, extractionLevel)); // Clamp between 1 and 100
   const leafScale = 1 - ((level - 1) / 99) * 0.8; // Leaf and Stand Scale
   const standScale = leafScale; // Same as leafScale
-  const presserTranslate = ((level - 1) / 99) * 40; // Presser Translate
+  const presserTranslate = ((level - 1) / 99) * 42; // Presser Translate
 
   return (
     <Svg
@@ -16,6 +17,7 @@ const Compress = ({ width = 68, height = 87 }) => {
       width={width}
       height={height}
       fill="none"
+      viewBox="0 0 68 87"
     >
       <G clipPath="url(#a)">
         {/* Leaf */}
