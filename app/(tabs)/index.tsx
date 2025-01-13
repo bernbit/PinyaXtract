@@ -10,8 +10,8 @@ import {
 import InputButton from "@/components/InputButton";
 import TripleSwitch from "@/components/TripleSwitch";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import SVG from "@/constants/SVG-Contants";
-import { Colors } from "@/constants/Colors-Contants";
+import SVG from "@/constants/SVG-Constants";
+import { Colors } from "@/constants/Colors-Constants";
 import useGlobal from "@/context/GlobalContext";
 
 const index = () => {
@@ -20,12 +20,14 @@ const index = () => {
     toggleMachineState,
     heaterState,
     setHeaterState,
-    toggleHeaterState,
     fanState,
     toggleFanState,
     extractionLevel,
     setExtractionLevel,
-    handleExtractionLevel,
+    rollerSpeed,
+    setRollerSpeed,
+    operationStatus,
+    setOperationStatus,
   } = useGlobal();
 
   return (
@@ -48,7 +50,7 @@ const index = () => {
         </View>
 
         <View className="mb-5 flex grow gap-4 px-2.5">
-          {/* Machine Status */}
+          {/* Machine Status
           <View className="">
             <Text className="mb-1 font-satoshi-bold text-xl">
               Machine Status
@@ -59,7 +61,7 @@ const index = () => {
                 Ready to Start
               </Text>
             </View>
-          </View>
+          </View> */}
 
           {/* Switches */}
           <View className="">
@@ -158,36 +160,60 @@ const index = () => {
             <View className="flex gap-3 rounded-lg bg-background px-5 py-6">
               {/* Extraction Level */}
               <View className="rounded-md bg-background-alt px-4 py-3">
-                <Text className="font-satoshi-bold text-lg text-light-text">
+                <Text
+                  className={`font-satoshi-bold text-lg text-light-text ${operationStatus ? "opacity-55" : ""}`}
+                >
                   Extraction Level
                 </Text>
-                <View className="mt-5 flex items-center gap-6">
+                <View
+                  className={`mt-5 flex items-center gap-6 ${operationStatus ? "opacity-55" : ""}`}
+                >
                   <SVG.Compress width={90} height={100} />
 
                   <InputButton
                     state={extractionLevel}
                     setState={setExtractionLevel}
-                    handleState={handleExtractionLevel}
+                    min={1}
+                    max={5}
+                    defaultVal={1}
+                    setValue={0.5}
                   />
                 </View>
               </View>
 
               {/* Roller Level */}
               <View className="rounded-md bg-background-alt px-4 py-3">
-                <Text className="font-satoshi-bold text-lg text-light-text">
+                <Text
+                  className={`font-satoshi-bold text-lg text-light-text ${operationStatus ? "opacity-55" : ""}`}
+                >
                   Roller Speed
                 </Text>
-                <View className="mt-5 flex items-center gap-6">
+                <View
+                  className={`mt-5 flex items-center gap-6 ${operationStatus ? "opacity-55" : ""}`}
+                >
                   <SVG.Roller width={160} height={80} />
-                  {/* <SVG.Roller width={300} height={200} /> */}
 
                   <InputButton
-                    state={extractionLevel}
-                    setState={setExtractionLevel}
-                    handleState={handleExtractionLevel}
+                    state={rollerSpeed}
+                    setState={setRollerSpeed}
+                    min={0}
+                    max={255}
+                    defaultVal={50}
+                    setValue={50}
                   />
                 </View>
               </View>
+
+              <TouchableOpacity
+                className={`rounded-md p-2 ${operationStatus ? "bg-danger" : "bg-primary"}`}
+                onPress={() => {
+                  setOperationStatus(!operationStatus);
+                }}
+              >
+                <Text className="text-center font-satoshi-bold text-xl tracking-wide">
+                  {operationStatus ? "Pause" : "Start"}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>

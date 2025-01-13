@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors-Contants";
+import { Colors } from "@/constants/Colors-Constants";
 import { Animated } from "react-native";
 
 const _layout = () => {

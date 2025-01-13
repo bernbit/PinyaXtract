@@ -6,8 +6,20 @@ import Animated, {
   withRepeat,
   withTiming,
 } from "react-native-reanimated";
+import useGlobal from "@/context/GlobalContext";
+import Helpers from "@/constants/Helpers-Constant";
 
 const Roller = ({ width = 328, height = 152 }) => {
+  const { rollerSpeed, operationStatus } = useGlobal();
+  const dashOffsetFinal = Helpers.getRangeValue(
+    rollerSpeed,
+    0,
+    255,
+    0,
+    243.137,
+  );
+  const rollerDuration = Helpers.getRangeValue(rollerSpeed, 0, 255, 2000, 1331);
+
   const gearRotation = useSharedValue(0);
   const dashOffset = useSharedValue(0);
 
@@ -15,21 +27,19 @@ const Roller = ({ width = 328, height = 152 }) => {
   const LargeGear = Animated.createAnimatedComponent(Path);
   const Belt = Animated.createAnimatedComponent(Path);
 
-  const machineState = true;
-
   //* useEffect for Gear Animation
   useEffect(() => {
-    if (machineState) {
+    if (operationStatus) {
       gearRotation.value = 0; // Reset rotation
       gearRotation.value = withRepeat(
-        withTiming(360, { duration: 2000 }),
+        withTiming(360, { duration: rollerDuration }),
         -1,
         false,
       );
 
-      dashOffset.value = 0; // Reset rotation
+      // dashOffset.value = 0; // Reset rotation
       dashOffset.value = withRepeat(
-        withTiming(120, { duration: 2000 }),
+        withTiming(243.137, { duration: rollerDuration }),
         -1,
         false,
       );
@@ -37,7 +47,7 @@ const Roller = ({ width = 328, height = 152 }) => {
       gearRotation.value = withTiming(0, { duration: 200 });
       dashOffset.value = withTiming(0, { duration: 200 });
     }
-  }, [machineState]);
+  }, [operationStatus]);
 
   const largeGearAnimation = useAnimatedProps(() => ({
     transform: [
@@ -135,9 +145,9 @@ const Roller = ({ width = 328, height = 152 }) => {
           strokeWidth={10}
           strokeLinejoin="round"
           strokeDasharray="10 20"
-          strokeDashoffset={0}
-          mask="url(#path-6-outside-1_299_304)"
           animatedProps={beltAnimation}
+          strokeDashoffset={!operationStatus ? dashOffsetFinal : 0}
+          mask="url(#path-6-outside-1_299_304)"
         />
       </G>
       <Defs>
