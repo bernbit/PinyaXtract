@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors-Constants";
-import { Animated } from "react-native";
 
 const _layout = () => {
   const [activeTab, setActiveTab] = useState("control");
-
-  const [scale] = useState(new Animated.Value(1));
 
   return (
     <Tabs
@@ -41,6 +38,28 @@ const _layout = () => {
         }}
         listeners={{
           tabPress: () => setActiveTab("control"),
+        }}
+      />
+
+      <Tabs.Screen
+        name="config"
+        options={{
+          title: "Config",
+          tabBarIcon: ({ focused, size }) => (
+            <MaterialIcons
+              name="tune"
+              size={size}
+              color={focused ? Colors.primary : Colors["light-text"]}
+            />
+          ),
+          tabBarItemStyle: {
+            borderTopWidth: 2,
+            borderTopColor:
+              activeTab === "config" ? Colors.primary : Colors.background,
+          },
+        }}
+        listeners={{
+          tabPress: () => setActiveTab("config"),
         }}
       />
 
@@ -89,12 +108,12 @@ const _layout = () => {
       />
 
       <Tabs.Screen
-        name="info"
+        name="admin"
         options={{
-          title: "Info",
+          title: "Admin",
           tabBarIcon: ({ focused, size }) => (
             <MaterialIcons
-              name="info"
+              name="admin-panel-settings"
               size={size}
               color={focused ? Colors.primary : Colors["light-text"]}
             />
@@ -102,11 +121,11 @@ const _layout = () => {
           tabBarItemStyle: {
             borderTopWidth: 2,
             borderTopColor:
-              activeTab === "info" ? Colors.primary : Colors.background,
+              activeTab === "admin" ? Colors.primary : Colors.background,
           },
         }}
         listeners={{
-          tabPress: () => setActiveTab("info"),
+          tabPress: () => setActiveTab("admin"),
         }}
       />
     </Tabs>

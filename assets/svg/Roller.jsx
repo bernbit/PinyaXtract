@@ -29,7 +29,7 @@ const Roller = ({ width = 328, height = 152 }) => {
 
   //* useEffect for Gear Animation
   useEffect(() => {
-    if (operationStatus) {
+    if (operationStatus && rollerSpeed !== 0) {
       gearRotation.value = 0; // Reset rotation
       gearRotation.value = withRepeat(
         withTiming(360, { duration: rollerDuration }),

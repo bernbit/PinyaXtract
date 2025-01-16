@@ -1,12 +1,13 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { Slot } from "expo-router";
 
-const info = () => {
+const _layout = () => {
   return (
     <View>
-      <Text>info</Text>
+      <Slot />
     </View>
   );
 };
 
-export default info;
+export default _layout;

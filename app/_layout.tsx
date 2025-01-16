@@ -1,4 +1,4 @@
-import { Stack, Tabs } from "expo-router";
+import { Stack } from "expo-router";
 import "../global.css";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -42,12 +42,16 @@ export default function RootLayout() {
     return null;
   }
 
+  const isTest = false;
+
   return (
     <AuthProvider>
       <GlobalProvider>
         <SafeAreaProvider className="">
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           </Stack>
         </SafeAreaProvider>
       </GlobalProvider>

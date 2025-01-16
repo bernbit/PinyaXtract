@@ -9,11 +9,12 @@ export function GlobalProvider({ children }) {
   const [heaterState, setHeaterState] = useState("off");
   const [heaterClickCount, setHeaterClickCount] = useState(0);
   const [fanState, setFanState] = useState(false);
-
   const [extractionLevel, setExtractionLevel] = useState(1);
   const [rollerSpeed, setRollerSpeed] = useState(50);
-
   const [operationStatus, setOperationStatus] = useState(false);
+  const [machineCondition, setMachineCondition] = useState("");
+  const [tempValue, setTempValue] = useState(40);
+  const [weightValue, setWeightValue] = useState(5);
 
   const toggleMachineState = () => setMachineState(!machineState);
   const toggleHeaterState = () => {
@@ -57,6 +58,13 @@ export function GlobalProvider({ children }) {
 
     operationStatus,
     setOperationStatus,
+
+    machineCondition,
+    setMachineCondition,
+    tempValue,
+    setTempValue,
+    weightValue,
+    setWeightValue,
   };
 
   return (

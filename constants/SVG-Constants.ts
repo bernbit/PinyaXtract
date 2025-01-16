@@ -8,6 +8,9 @@ import Gear from "@/assets/svg/Gear";
 import Heater from "@/assets/svg/Heater";
 import Fan from "@/assets/svg/Fan";
 import Roller from "@/assets/svg/Roller";
+import Condition from "@/assets/svg/Condition";
+import TempMeter from "@/assets/svg/TempMeter";
+import WeightMeter from "@/assets/svg/WeightMeter";
 
 const SVG = {
   Logo,
@@ -20,6 +23,9 @@ const SVG = {
   Heater,
   Fan,
   Roller,
+  Condition,
+  TempMeter,
+  WeightMeter,
 };
 
 export default SVG;
