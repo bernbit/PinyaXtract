@@ -1,68 +1,93 @@
-import React, { useState } from "react";
-import { SafeAreaView, View, Text, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { SafeAreaView, ScrollView, View, Text } from "react-native";
 import TabHeader from "@/components/TabHeader";
 import SVG from "@/constants/SVG-Constants";
-import ItemBox from "@/components/ItemBox";
-import InnerBox from "@/components/InnerBox";
+import { useFocusEffect } from "@react-navigation/native";
 import useGlobal from "@/context/GlobalContext";
 
 const monitor = () => {
-  const { weightValue, tempValue } = useGlobal();
+  const { setActiveTab, machineState, tempValue, weightValue } = useGlobal();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setActiveTab("monitor");
+    }, [setActiveTab]),
+  );
 
   return (
     <SafeAreaView className="h-full bg-main">
-      <ScrollView contentContainerClassName="flex gap-5">
+      <ScrollView
+        contentContainerClassName="flex "
+        // removeClippedSubviews={true}
+      >
+        {/* Header */}
         <TabHeader icon={"view-timeline"} title={"Monitor"} />
 
-        <View className="mb-5 flex grow gap-4 px-2.5">
-          {/* Machine Condition */}
-          <ItemBox title={"Machine Condition"}>
-            <View className="flex items-center gap-2 rounded-md bg-background-alt p-4">
-              {/* Machine Switch */}
-              <View className="flex items-center rounded-md bg-background-alt px-4 py-3">
-                <SVG.Condition width={120} height={120} />
+        <View className="mb-5 flex grow gap-2 px-2.5">
+          {/* Machine Status */}
+          <Text className="font-satoshi-bold text-lg">Machine Status</Text>
+          <View className="flex items-center justify-center gap-2 rounded-lg bg-background p-8">
+            {machineState ? (
+              <SVG.Extract width={45} height={45} />
+            ) : (
+              <SVG.Ready width={45} height={45} />
+            )}
 
-                <Text className="text-center font-satoshi-bold text-xl text-light-text">
-                  {tempValue >= 70 ? "OverHeating" : "Stable"}
+            <Text className="border border-transparent font-satoshi-bold text-2xl text-light-text">
+              {machineState ? "Extracting" : "Ready to Start"}
+            </Text>
+          </View>
+
+          {/* Machine Condition */}
+          <Text className="font-satoshi-bold text-lg">Sensor Reading</Text>
+          <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
+            <View className="flex basis-[80%] items-center">
+              <SVG.Condition width={125} height={105} />
+            </View>
+
+            <View className="flex flex-1 items-center justify-end">
+              <Text className="font-satoshi-bold text-2xl text-light-text">
+                {tempValue >= 70 ? "Overheating" : "Normal"}
+              </Text>
+              <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
+                Machine Condition
+              </Text>
+            </View>
+          </View>
+
+          {/* Sensor Reading */}
+          <View className="flex flex-row gap-2">
+            {/* Temperature */}
+            <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
+              <View className="flex basis-[80%] items-center">
+                <SVG.TempMeter width={125} height={170} />
+              </View>
+              <View className="flex flex-1 items-center justify-end">
+                <Text className="font-satoshi-bold text-2xl text-light-text">
+                  {tempValue}°C
+                </Text>
+                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
+                  Temperature
                 </Text>
               </View>
             </View>
-          </ItemBox>
 
-          {/* Sensor Reading */}
-          <ItemBox title={"Sensor Reading"}>
-            <View className="flex gap-3">
-              {/* Temperature */}
-              <InnerBox title="Temperature">
-                <View className="flex items-center gap-6">
-                  <SVG.TempMeter width={140} height={80} />
-
-                  <View className="flex flex-row justify-center">
-                    <Text className="text-center font-cabinetGrotesk-bold text-3xl text-light-text">
-                      {tempValue}
-                    </Text>
-                    <Text className="text-center font-cabinetGrotesk-bold text-xl text-light-text">
-                      °C
-                    </Text>
-                  </View>
-                </View>
-              </InnerBox>
-
-              {/* Temperature */}
-              <InnerBox title="Fiber Weight">
-                <View className="flex items-center gap-5">
-                  <SVG.WeightMeter width={140} height={140} />
-
-                  <View className="flex items-center justify-center">
-                    <Text className="text-center font-cabinetGrotesk-bold text-3xl text-light-text">
-                      {weightValue}
-                      <Text className="text-xl">kg</Text>
-                    </Text>
-                  </View>
-                </View>
-              </InnerBox>
+            {/* Fiber Weight */}
+            <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
+              <View className="flex basis-[80%] items-center">
+                <SVG.WeightMeter width={125} height={170} />
+              </View>
+              <View className="flex flex-1 items-center justify-end">
+                <Text className="font-satoshi-bold text-2xl text-light-text">
+                  {weightValue}
+                  <Text className="text-lg">kg</Text>
+                </Text>
+                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
+                  Fiber Weight
+                </Text>
+              </View>
             </View>
-          </ItemBox>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

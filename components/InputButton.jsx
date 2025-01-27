@@ -45,7 +45,7 @@ const InputButton = ({ state, setState, min, max, defaultVal, setValue }) => {
 
   return (
     <View
-      className="flex h-10 w-[40%] flex-row"
+      className="flex h-9 w-[60%] flex-row"
       pointerEvents={`${operationStatus ? "none" : "auto"}`}
     >
       {/* Minus (-) */}
@@ -59,7 +59,7 @@ const InputButton = ({ state, setState, min, max, defaultVal, setValue }) => {
       </TouchableOpacity>
 
       <TextInput
-        className="flex-1 grow bg-primary p-0 text-center font-cabinetGrotesk-bold text-lg"
+        className="flex-1 bg-primary p-0 text-center font-cabinetGrotesk-bold text-lg"
         keyboardType="numeric"
         onChangeText={(input) => handleStateChange(input, "manual", min, max)}
         onBlur={handleBlur}
@@ -71,12 +71,12 @@ const InputButton = ({ state, setState, min, max, defaultVal, setValue }) => {
 
       {/* Plus (+) */}
       <TouchableOpacity
-        className={`gitems-center flex justify-center bg-secondary px-2 ${state >= max ? "opacity-55" : ""}`}
+        className={`flex items-center justify-center bg-secondary px-2 ${state >= max ? "opacity-55" : ""}`}
         onPress={() => handleStateChange(setValue, "add", min, max)}
         onLongPress={() => setState(max)}
         disabled={state >= max}
       >
-        <AntDesign name="plus" size={20} color={Colors["light-text"]} />
+        <AntDesign name="plus" size={15} color={Colors["light-text"]} />
       </TouchableOpacity>
     </View>
   );

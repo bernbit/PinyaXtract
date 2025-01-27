@@ -2,133 +2,111 @@ import React, { useState } from "react";
 import { Tabs } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors-Constants";
+import { View, Text, Pressable, Dimensions } from "react-native";
+import Badge from "@/components/Badge";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+import notification from "./notification";
+
+const screenWidth = Dimensions.get("window").width;
 
 const _layout = () => {
-  const [activeTab, setActiveTab] = useState("control");
+  const indicatorPosition = useSharedValue(0);
+
+  const animatedIndicatorStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: withTiming(indicatorPosition.value, { duration: 300 }) },
+    ],
+    width: screenWidth / 5, // Width of each tab
+    height: 50, // Height of the indicator
+    // backgroundColor: Colors.primary, // Color of the indicator
+    backgroundColor: "transparent",
+    borderTopColor: Colors.primary, // Color of the
+    borderTopWidth: 2.5,
+    // borderRightWidth: 0,
+    // borderLeftWidth: 0,
+    // borderBottomWidth: 0,
+  }));
+
+  const handleTabPress = (index: number): void => {
+    const tabWidth = screenWidth / 5; // Adjust for the number of tabs
+    indicatorPosition.value = index * tabWidth; // Update the position of the moving border
+  };
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        animation: "shift",
-        tabBarStyle: { backgroundColor: Colors.background },
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors["light-text"],
-        tabBarLabelStyle: {
-          fontFamily: "Satoshi-Medium",
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Control",
-          tabBarIcon: ({ focused, size }) => (
-            <MaterialIcons
-              name="settings-remote"
-              size={size}
-              color={focused ? Colors.primary : Colors["light-text"]}
-            />
-          ),
-          tabBarItemStyle: {
-            borderTopWidth: 2,
-            borderTopColor:
-              activeTab === "control" ? Colors.primary : Colors.background,
+    <View className="flex-1">
+      <Tabs
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          animation: "shift",
+          lazy: true,
+          tabBarStyle: {
+            backgroundColor: Colors.background,
+            position: "relative",
+            // height: 50,
           },
-        }}
-        listeners={{
-          tabPress: () => setActiveTab("control"),
-        }}
-      />
+          tabBarActiveTintColor: Colors.primary,
+          tabBarInactiveTintColor: Colors["light-text"],
+          tabBarLabelStyle: {
+            fontFamily: "Satoshi-Medium",
+          },
 
-      <Tabs.Screen
-        name="config"
-        options={{
-          title: "Config",
-          tabBarIcon: ({ focused, size }) => (
-            <MaterialIcons
-              name="tune"
-              size={size}
-              color={focused ? Colors.primary : Colors["light-text"]}
-            />
-          ),
-          tabBarItemStyle: {
-            borderTopWidth: 2,
-            borderTopColor:
-              activeTab === "config" ? Colors.primary : Colors.background,
-          },
-        }}
-        listeners={{
-          tabPress: () => setActiveTab("config"),
-        }}
-      />
+          tabBarButton: (props) => {
+            const { onPress, accessibilityState, children, style } = props;
 
-      <Tabs.Screen
-        name="monitor"
-        options={{
-          title: "Monitor",
-          tabBarIcon: ({ focused, size }) => (
-            <MaterialIcons
-              name="view-timeline"
-              size={size}
-              color={focused ? Colors.primary : Colors["light-text"]}
-            />
-          ),
-          tabBarItemStyle: {
-            borderTopWidth: 2,
-            borderTopColor:
-              activeTab === "monitor" ? Colors.primary : Colors.background,
-          },
-        }}
-        listeners={{
-          tabPress: () => setActiveTab("monitor"),
-        }}
-      />
+            const tabObject = {
+              index: { title: "Control", icon: "settings-remote" },
+              monitor: { title: "Monitor", icon: "view-timeline" },
+              profile: { title: "Profile", icon: "manage-accounts" },
+              notification: { title: "Notification", icon: "notifications" },
+              admin: { title: "Admin", icon: "admin-panel-settings" },
+            };
+            const tabIndex = Object.keys(tabObject).indexOf(route.name);
+            const tabConfig = tabObject[route.name as keyof typeof tabObject];
 
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ focused, size }) => (
-            <MaterialIcons
-              name="manage-accounts"
-              size={size}
-              color={focused ? Colors.primary : Colors["light-text"]}
-            />
-          ),
-          tabBarItemStyle: {
-            borderTopWidth: 2,
-            borderTopColor:
-              activeTab === "profile" ? Colors.primary : Colors.background,
-          },
-        }}
-        listeners={{
-          tabPress: () => setActiveTab("profile"),
-        }}
-      />
+            const isFocused = accessibilityState?.selected;
 
-      <Tabs.Screen
-        name="admin"
-        options={{
-          title: "Admin",
-          tabBarIcon: ({ focused, size }) => (
-            <MaterialIcons
-              name="admin-panel-settings"
-              size={size}
-              color={focused ? Colors.primary : Colors["light-text"]}
-            />
-          ),
-          tabBarItemStyle: {
-            borderTopWidth: 2,
-            borderTopColor:
-              activeTab === "admin" ? Colors.primary : Colors.background,
+            return (
+              <Pressable
+                className="relative flex-1 items-center justify-center"
+                onPress={(event) => {
+                  if (!isFocused) {
+                    handleTabPress(tabIndex); // Update the indicator position
+                    onPress?.(event); // Trigger the navigation action
+                  }
+                }}
+              >
+                <MaterialIcons
+                  name={tabConfig.icon as keyof typeof MaterialIcons.glyphMap}
+                  size={23}
+                  color={`${isFocused ? Colors.primary : Colors["light-text"]}`}
+                />
+                <Text
+                  className={`text-xs ${isFocused ? "text-primary" : "text-light-text"}`}
+                >
+                  {tabConfig.title}
+                </Text>
+
+                {/* <Badge /> */}
+              </Pressable>
+            );
           },
-        }}
-        listeners={{
-          tabPress: () => setActiveTab("admin"),
-        }}
+        })}
+      >
+        <Tabs.Screen name="index" options={{ title: "Control" }} />
+        <Tabs.Screen name="monitor" options={{ title: "Monitor" }} />
+        <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+        <Tabs.Screen name="notification" options={{ title: "Notification" }} />
+        <Tabs.Screen name="admin" options={{ title: "Admin" }} />
+      </Tabs>
+      <Animated.View
+        style={[animatedIndicatorStyle]}
+        className={"absolute bottom-0"}
       />
-    </Tabs>
+    </View>
   );
 };
 

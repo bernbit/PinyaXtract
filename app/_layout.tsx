@@ -42,8 +42,6 @@ export default function RootLayout() {
     return null;
   }
 
-  const isTest = false;
-
   return (
     <AuthProvider>
       <GlobalProvider>

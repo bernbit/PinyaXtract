@@ -15,7 +15,7 @@ function WeightMeter({ width = 114, height = 114 }) {
   const pointerRotationFinal = Helpers.getRangeValue(
     weightValue,
     0,
-    10,
+    5,
     -74,
     74,
   );

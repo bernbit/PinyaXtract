@@ -7,11 +7,14 @@ import Animated, {
   withRepeat,
   withTiming,
   cancelAnimation,
+  Easing,
 } from "react-native-reanimated";
 import Helpers from "@/constants/Helpers-Constant";
+import { useIsFocused } from "@react-navigation/native";
 
 const Compress = ({ width = 68, height = 87 }) => {
-  const { extractionLevel, operationStatus } = useGlobal();
+  const { extractionLevel, machineState } = useGlobal();
+  const isFocused = useIsFocused();
 
   // Animation
   const leafScale = useSharedValue(1);
@@ -46,29 +49,40 @@ const Compress = ({ width = 68, height = 87 }) => {
 
   //* useEffect for Gear Animation
   useEffect(() => {
-    if (operationStatus) {
-      leafScale.value = 1; // Reset rotation
+    if (!isFocused) {
+      cancelAnimation(leafScale);
+      cancelAnimation(standScale);
+      cancelAnimation(presserTranslate);
+
+      return;
+    }
+
+    if (machineState) {
+      leafScale.value = 1;
       leafScale.value = withRepeat(
-        withTiming(leafScaleFinal, { duration: 1000 }),
+        withTiming(leafScaleFinal, { duration: 1000, easing: Easing.linear }),
         -1,
         true,
       );
 
       standScale.value = 1;
       standScale.value = withRepeat(
-        withTiming(standScaleFinal, { duration: 1000 }),
+        withTiming(standScaleFinal, { duration: 1000, easing: Easing.linear }),
         -1,
         true,
       );
 
       presserTranslate.value = 1;
       presserTranslate.value = withRepeat(
-        withTiming(presserTranslateFinal, { duration: 1000 }),
+        withTiming(presserTranslateFinal, {
+          duration: 1000,
+          easing: Easing.linear,
+        }),
         -1,
         true,
       );
     } else {
-      // Stop animations when operationStatus is false
+      // Stop animations when machineState is false
       cancelAnimation(leafScale);
       cancelAnimation(standScale);
       cancelAnimation(presserTranslate);
@@ -78,7 +92,7 @@ const Compress = ({ width = 68, height = 87 }) => {
       standScale.value = 1;
       presserTranslate.value = 1;
     }
-  }, [operationStatus]);
+  }, [machineState, extractionLevel]);
 
   const leafAnimation = useAnimatedProps(() => ({
     transform: [
@@ -115,59 +129,56 @@ const Compress = ({ width = 68, height = 87 }) => {
       viewBox="0 0 68 87"
     >
       <G clipPath="url(#a)">
-        {/* Leaf */}
         <Leaf
           animatedProps={leafAnimation}
-          transform={`translate(0,68) scale(1, ${!operationStatus ? leafScaleFinal : "1"}) translate(0, -68)`}
+          transform={`translate(0,68) scale(1, ${!machineState ? leafScaleFinal : "1"}) translate(0, -68)`}
         >
           <Path
+            d="M53.98 21.3a.8.8 0 00-1.26 0c-1.37 1.65-4.73 6.3-7.3 14.62a6 6 0 00.02 1.4A78.2 78.2 0 0042.1 60c0 12.49 5.04 5.8 11.25 5.8 6.22 0 11.26 6.69 11.26-5.8 0-9.04-1.99-16-3.56-21.75-.19-.7.25-2.34.25-2.34-2.58-8.33-5.94-12.97-7.32-14.63z"
             fill="#30F353"
-            d="M53.983 21.295a.808.808 0 0 0-1.258 0c-1.376 1.66-4.737 6.296-7.314 14.622 0 0 .127 1.047.025 1.4-1.71 5.88-3.34 13.13-3.34 22.693 0 12.488 5.04 5.796 11.258 5.796 6.218 0 11.258 6.692 11.258-5.796 0-9.04-1.99-16.01-3.56-21.749-.19-.694.247-2.339.247-2.339-2.577-8.33-5.94-12.967-7.316-14.627Z"
           />
           <Path
+            d="M64.61 60.01c0 12.49-5.04 5.8-11.26 5.8-6.21 0-11.25 6.69-11.25-5.8 0-10.14 1.45-18.08 3.31-24.1a43.6 43.6 0 013.46 3.03c.22.21.56.2.77-.02a5.25 5.25 0 017.4-.03c.22.22.55.24.77.03a48.05 48.05 0 013.49-3c1.86 6.02 3.31 13.96 3.31 24.1z"
             fill="#26C242"
-            d="M64.614 60.012c0 12.485-5.042 5.794-11.26 5.794-6.216 0-11.259 6.691-11.259-5.794 0-10.138 1.453-18.081 3.316-24.095 1.17.917 2.327 1.921 3.459 3.02a.541.541 0 0 0 .775-.02c2.064-2.166 5.546-1.921 7.397-.023.213.219.548.236.772.026a48.046 48.046 0 0 1 3.485-2.998c1.862 6.014 3.315 13.955 3.315 24.09Z"
           />
         </Leaf>
 
-        {/* Stand */}
         <Stand
           animatedProps={standAnimation}
-          transform={`translate(0,71) scale(1, ${!operationStatus ? standScaleFinal : 1}) translate(0, -71)`}
+          transform={`translate(0,71) scale(1, ${!machineState ? standScaleFinal : 1}) translate(0, -71)`}
         >
-          <Path fill="#2B2B2B" d="M8.952 17.438h13.81v53.621H8.952V17.438Z" />
+          <Path d="M8.95 17.44h13.81v53.62H8.96V17.44z" fill="#2B2B2B" />
         </Stand>
 
         <Path
+          d="M40.92 77.9v-6.88c0-.46.2-.9.58-1.22.37-.32.87-.5 1.39-.5h19.68c.52 0 1.02.18 1.4.5.36.33.57.76.57 1.22v6.88H40.92z"
           fill="#E5E5E5"
-          d="M40.922 77.9v-6.88c0-.456.208-.894.577-1.216a2.12 2.12 0 0 1 1.391-.504h19.68a2.12 2.12 0 0 1 1.392.504c.37.322.577.76.577 1.216v6.88H40.922Z"
         />
         <Path
+          d="M67.93 77.89v1.7c0 1.81-.73 3.55-2.03 4.83a7.01 7.01 0 01-4.92 2H39.07a8.8 8.8 0 01-4.47-1.22l-4.56-2.68a8.8 8.8 0 00-4.47-1.22H5.39a5.28 5.28 0 01-3.69-1.5 5.07 5.07 0 01-1.52-3.62v-3.41a1.7 1.7 0 011.73-1.71h27.13a8.8 8.8 0 014.47 1.22l4.56 2.68a8.8 8.8 0 004.47 1.22H66.2c.47 0 .9.18 1.23.5.33.32.51.75.51 1.2z"
           fill="#26C242"
-          d="M67.932 77.887v1.706c0 1.81-.732 3.547-2.035 4.828a7.013 7.013 0 0 1-4.914 1.999H39.067c-1.575 0-3.12-.42-4.47-1.217l-4.56-2.686a8.805 8.805 0 0 0-4.47-1.217H5.389a5.26 5.26 0 0 1-3.685-1.5 5.075 5.075 0 0 1-1.527-3.62v-3.413c0-.453.183-.887.51-1.207.325-.32.767-.5 1.228-.5h27.128c1.575 0 3.12.42 4.47 1.217l4.559 2.686a8.804 8.804 0 0 0 4.47 1.217h23.654c.46 0 .903.18 1.228.5.326.32.51.754.51 1.207Z"
         />
 
-        {/* Presser */}
         <Presser
           animatedProps={presserAnimation}
-          transform={`translate(0, ${!operationStatus ? presserTranslateFinal : 1})`}
+          transform={`translate(0, ${!machineState ? presserTranslateFinal : 1})`}
         >
           <Path
+            d="M40.92 8.9v8.5c0 .44.2.87.58 1.2.37.31.87.5 1.39.5h19.68c.52 0 1.02-.19 1.4-.5.36-.33.57-.76.57-1.2V8.9H40.92z"
             fill="#E5E5E5"
-            d="M40.922 8.89v8.5c0 .452.208.884.577 1.203.369.319.87.498 1.391.498h19.68c.523 0 1.023-.18 1.392-.498.37-.319.577-.751.577-1.202v-8.5H40.922Z"
           />
           <Path
+            d="M67.96 10.62v-1.7c0-1.81-.73-3.55-2.04-4.83a7.01 7.01 0 00-4.91-2h-25.4a8.8 8.8 0 00-4.46 1.22l-4.56 2.68a8.8 8.8 0 01-4.47 1.22H5.42c-1.39 0-2.71.54-3.69 1.5A5.07 5.07 0 00.2 12.33v3.41c0 .46.19.9.51 1.21.33.32.77.5 1.23.5H25.6a8.8 8.8 0 004.47-1.22l4.56-2.68a8.8 8.8 0 014.47-1.22h27.13c.46 0 .9-.18 1.23-.5.33-.32.5-.75.5-1.2z"
             fill="#26C242"
-            d="M67.96 10.624V8.918c0-1.811-.733-3.547-2.036-4.828a7.013 7.013 0 0 0-4.914-2H35.619c-1.575 0-3.12.422-4.47 1.218L26.59 5.994a8.805 8.805 0 0 1-4.47 1.217H5.416a5.26 5.26 0 0 0-3.686 1.5 5.075 5.075 0 0 0-1.526 3.62v3.413c0 .453.183.887.508 1.207.326.32.768.5 1.229.5h23.654c1.574 0 3.12-.42 4.47-1.217l4.558-2.686a8.804 8.804 0 0 1 4.47-1.217h27.129c.46 0 .903-.18 1.228-.5.326-.32.51-.754.51-1.207Z"
           />
         </Presser>
       </G>
       <Defs>
         <ClipPath id="a">
-          <Path fill="#fff" d="M0 .5h68v86H0z" />
+          <Path fill="#fff" transform="translate(0 .5)" d="M0 0h68v86H0z" />
         </ClipPath>
       </Defs>
     </Svg>
   );
 };
-export default Compress;
+export default React.memo(Compress);

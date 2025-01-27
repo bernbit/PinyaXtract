@@ -2,9 +2,9 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import useGlobal from "@/context/GlobalContext";
 
-const TripleSwitch = ({ state, setState }) => {
+const TripleSwitch = ({ state, setState, disable = false }) => {
   const options = ["LOW", "OFF", "HIGH"];
-  const { heaterClickCount, setHeaterClickCount } = useGlobal();
+  const { setHeaterClickCount } = useGlobal();
 
   const handleChange = (value) => {
     const valParse = value.toLowerCase();
@@ -22,7 +22,13 @@ const TripleSwitch = ({ state, setState }) => {
   };
 
   return (
-    <View className="flex flex-row items-center justify-center gap-2 rounded-md bg-secondary px-2 py-2">
+    <View
+      className={`relative flex flex-row items-center justify-center gap-2 rounded-md bg-secondary px-2 py-2 ${!disable ? "pointer-events-none" : "pointer-events-auto"}`}
+    >
+      {/* {!disable && (
+        <View className="absolute z-20 h-[3px] w-[90%] bg-danger"></View>
+      )} */}
+
       {options.map((option, index) => (
         <TouchableOpacity
           key={index}
