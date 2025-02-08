@@ -1,11 +1,20 @@
-import { View, Text } from "react-native";
 import React from "react";
-import { Slot, Stack } from "expo-router";
+import { Stack, useRouter, useFocusEffect } from "expo-router";
+import useAuth from "@/context/AuthContext";
 
 const _layout = () => {
+  const router = useRouter();
+  const { isAuthenticated } = useAuth();
+
+  useFocusEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/control");
+    }
+  });
+
   return (
     <Stack>
-      <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="index" options={{ headerShown: false }} />
       <Stack.Screen name="resetPassword" options={{ headerShown: false }} />
     </Stack>
   );

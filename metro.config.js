@@ -5,6 +5,7 @@ const {
 } = require("react-native-reanimated/metro-config");
 
 const config = getDefaultConfig(__dirname);
+config.resolver.sourceExts.push("cjs");
 
 const nativewindConfig = withNativeWind(config, { input: "./global.css" });
 

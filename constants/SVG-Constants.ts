@@ -11,6 +11,9 @@ import Roller from "@/assets/svg/Roller";
 import Condition from "@/assets/svg/Condition";
 import TempMeter from "@/assets/svg/TempMeter";
 import WeightMeter from "@/assets/svg/WeightMeter";
+import Overheat from "@/assets/svg/Overheat";
+import Stable from "@/assets/svg/Stable";
+import Warming from "@/assets/svg/Warming";
 
 const SVG = {
   Logo,
@@ -26,6 +29,9 @@ const SVG = {
   Condition,
   TempMeter,
   WeightMeter,
+  Overheat,
+  Stable,
+  Warming,
 };
 
 export default SVG;

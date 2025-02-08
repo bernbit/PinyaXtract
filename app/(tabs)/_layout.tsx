@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Tabs } from "expo-router";
+import React from "react";
+import { Tabs, useRouter, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors-Constants";
 import { View, Text, Pressable, Dimensions } from "react-native";
@@ -9,31 +9,47 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
-import notification from "./notification";
+import useAuth from "@/context/AuthContext";
 
+// Global Variables
+const tabRoutes = [
+  { name: "control", title: "Control", icon: "settings-remote" },
+  { name: "monitor", title: "Monitor", icon: "view-timeline" },
+  { name: "notification", title: "Notification", icon: "notifications" },
+  { name: "(admin)", title: "Admin", icon: "admin-panel-settings" },
+  { name: "(menu)", title: "Menu", icon: "menu" },
+];
 const screenWidth = Dimensions.get("window").width;
+const tabWidth = screenWidth / tabRoutes.length;
 
 const _layout = () => {
-  const indicatorPosition = useSharedValue(0);
+  //Authentication
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
 
+  useFocusEffect(() => {
+    if (!isAuthenticated) {
+      router.replace("/");
+    }
+  });
+
+  //Animations
+  const indicatorPosition = useSharedValue<number>(0);
   const animatedIndicatorStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: withTiming(indicatorPosition.value, { duration: 300 }) },
     ],
-    width: screenWidth / 5, // Width of each tab
-    height: 50, // Height of the indicator
-    // backgroundColor: Colors.primary, // Color of the indicator
+    width: tabWidth,
+    height: 50,
+    position: "absolute",
+    bottom: 0,
     backgroundColor: "transparent",
-    borderTopColor: Colors.primary, // Color of the
+    borderTopColor: Colors.primary,
     borderTopWidth: 2.5,
-    // borderRightWidth: 0,
-    // borderLeftWidth: 0,
-    // borderBottomWidth: 0,
   }));
 
   const handleTabPress = (index: number): void => {
-    const tabWidth = screenWidth / 5; // Adjust for the number of tabs
-    indicatorPosition.value = index * tabWidth; // Update the position of the moving border
+    indicatorPosition.value = index * tabWidth;
   };
 
   return (
@@ -46,36 +62,21 @@ const _layout = () => {
           tabBarStyle: {
             backgroundColor: Colors.background,
             position: "relative",
-            // height: 50,
           },
-          tabBarActiveTintColor: Colors.primary,
-          tabBarInactiveTintColor: Colors["light-text"],
-          tabBarLabelStyle: {
-            fontFamily: "Satoshi-Medium",
-          },
-
+          // Customize Tab Bar
           tabBarButton: (props) => {
-            const { onPress, accessibilityState, children, style } = props;
-
-            const tabObject = {
-              index: { title: "Control", icon: "settings-remote" },
-              monitor: { title: "Monitor", icon: "view-timeline" },
-              profile: { title: "Profile", icon: "manage-accounts" },
-              notification: { title: "Notification", icon: "notifications" },
-              admin: { title: "Admin", icon: "admin-panel-settings" },
-            };
-            const tabIndex = Object.keys(tabObject).indexOf(route.name);
-            const tabConfig = tabObject[route.name as keyof typeof tabObject];
-
+            const { onPress, accessibilityState } = props;
             const isFocused = accessibilityState?.selected;
+            const tabIndex = tabRoutes.findIndex((r) => r.name === route.name);
+            const tabConfig = tabRoutes[tabIndex];
 
             return (
               <Pressable
                 className="relative flex-1 items-center justify-center"
                 onPress={(event) => {
                   if (!isFocused) {
-                    handleTabPress(tabIndex); // Update the indicator position
-                    onPress?.(event); // Trigger the navigation action
+                    handleTabPress(tabIndex);
+                    onPress?.(event);
                   }
                 }}
               >
@@ -96,16 +97,14 @@ const _layout = () => {
           },
         })}
       >
-        <Tabs.Screen name="index" options={{ title: "Control" }} />
-        <Tabs.Screen name="monitor" options={{ title: "Monitor" }} />
-        <Tabs.Screen name="profile" options={{ title: "Profile" }} />
-        <Tabs.Screen name="notification" options={{ title: "Notification" }} />
-        <Tabs.Screen name="admin" options={{ title: "Admin" }} />
+        {/* Tab Screens */}
+        {tabRoutes.map(({ name }) => (
+          <Tabs.Screen key={name} name={name} />
+        ))}
       </Tabs>
-      <Animated.View
-        style={[animatedIndicatorStyle]}
-        className={"absolute bottom-0"}
-      />
+
+      {/* Animated Indicator */}
+      <Animated.View style={[animatedIndicatorStyle]} />
     </View>
   );
 };

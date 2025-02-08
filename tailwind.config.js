@@ -8,6 +8,7 @@ module.exports = {
       colors: {
         // main: "#4c6e71",
         main: "#EEF7FF",
+        // main: "#FFF",
         primary: "#30F353",
         secondary: "#2B2B2B",
         background: "#1F4A4E",
@@ -15,6 +16,8 @@ module.exports = {
         "light-text": "#FFFFFF",
         "dark-text": "#2B2B2B",
         danger: "#FF0000",
+        notification: "#c1fbcb",
+        // notification: "#acfaba",
       },
       fontFamily: {
         satoshi: ["Satoshi", ""],

@@ -1,29 +1,19 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { SafeAreaView, ScrollView, View, Text } from "react-native";
 import TabHeader from "@/components/TabHeader";
 import SVG from "@/constants/SVG-Constants";
-import { useFocusEffect } from "@react-navigation/native";
 import useGlobal from "@/context/GlobalContext";
 
 const monitor = () => {
-  const { setActiveTab, machineState, tempValue, weightValue } = useGlobal();
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setActiveTab("monitor");
-    }, [setActiveTab]),
-  );
+  const { machineState, tempValue, weightValue } = useGlobal();
 
   return (
-    <SafeAreaView className="h-full bg-main">
-      <ScrollView
-        contentContainerClassName="flex "
-        // removeClippedSubviews={true}
-      >
+    <SafeAreaView className="flex-1 bg-main">
+      <ScrollView contentContainerClassName="flex min-h-full">
         {/* Header */}
         <TabHeader icon={"view-timeline"} title={"Monitor"} />
 
-        <View className="mb-5 flex grow gap-2 px-2.5">
+        <View className="mb-5 flex flex-1 justify-center gap-2 px-2.5">
           {/* Machine Status */}
           <Text className="font-satoshi-bold text-lg">Machine Status</Text>
           <View className="flex items-center justify-center gap-2 rounded-lg bg-background p-8">
