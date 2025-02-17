@@ -16,7 +16,7 @@ const monitor = () => {
         <View className="mb-5 flex flex-1 justify-center gap-2 px-2.5">
           {/* Machine Status */}
           <Text className="font-satoshi-bold text-lg">Machine Status</Text>
-          <View className="flex items-center justify-center gap-2 rounded-lg bg-background p-8">
+          <View className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-background p-8">
             {machineState ? (
               <SVG.Extract width={45} height={45} />
             ) : (
@@ -30,12 +30,12 @@ const monitor = () => {
 
           {/* Machine Condition */}
           <Text className="font-satoshi-bold text-lg">Sensor Reading</Text>
-          <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
-            <View className="flex basis-[80%] items-center">
+          <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
+            <View className="flex items-center">
               <SVG.Condition width={125} height={105} />
             </View>
 
-            <View className="flex flex-1 items-center justify-end">
+            <View className="flex items-center justify-end">
               <Text className="font-satoshi-bold text-2xl text-light-text">
                 {tempValue >= 70 ? "Overheating" : "Normal"}
               </Text>
@@ -46,13 +46,13 @@ const monitor = () => {
           </View>
 
           {/* Sensor Reading */}
-          <View className="flex flex-row gap-2">
+          <View className="flex flex-1 flex-row gap-2">
             {/* Temperature */}
-            <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
-              <View className="flex basis-[80%] items-center">
+            <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
+              <View className="flex items-center">
                 <SVG.TempMeter width={125} height={170} />
               </View>
-              <View className="flex flex-1 items-center justify-end">
+              <View className="flex items-center justify-end">
                 <Text className="font-satoshi-bold text-2xl text-light-text">
                   {tempValue}°C
                 </Text>
@@ -63,11 +63,11 @@ const monitor = () => {
             </View>
 
             {/* Fiber Weight */}
-            <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
-              <View className="flex basis-[80%] items-center">
+            <View className="flex flex-1 items-center justify-center gap-4 rounded-lg bg-background py-9">
+              <View className="flex items-center">
                 <SVG.WeightMeter width={125} height={170} />
               </View>
-              <View className="flex flex-1 items-center justify-end">
+              <View className="flex items-center justify-end">
                 <Text className="font-satoshi-bold text-2xl text-light-text">
                   {weightValue}
                   <Text className="text-lg">kg</Text>

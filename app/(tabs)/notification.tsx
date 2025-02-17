@@ -8,10 +8,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 const notification = () => {
   return (
     <SafeAreaView className="flex-1 bg-main">
-      <ScrollView
-        contentContainerClassName="min-h-full"
-        removeClippedSubviews={true}
-      >
+      <ScrollView contentContainerClassName="min-h-full">
         {/* Header */}
         <TabHeader icon={"notifications"} title={"Notifications"} />
 

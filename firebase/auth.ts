@@ -7,8 +7,14 @@ import {
   signOut,
   sendPasswordResetEmail,
   deleteUser,
+  updatePassword,
+  updateEmail,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
   User,
 } from "firebase/auth";
+
+import { authErrors } from "./errorList";
 
 //* Firebase Signup
 export async function signup(email: string, password: string) {
@@ -18,12 +24,12 @@ export async function signup(email: string, password: string) {
       email,
       password,
     );
-    // logout();
-    console.log("Successfully signed up");
+    console.log("Signed up succesfully");
     return userCredential;
-  } catch (error) {
-    console.error("Error signing up:", error);
-    throw error;
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Signed up failed", errMessage);
+    throw errMessage;
   }
 }
 
@@ -35,10 +41,12 @@ export async function login(email: string, password: string) {
       email,
       password,
     );
+    console.log("Login successfully");
     return userCredential;
-  } catch (error) {
-    console.error("Error logging in:", error);
-    throw error;
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Login Failed", errMessage);
+    throw errMessage;
   }
 }
 
@@ -46,10 +54,11 @@ export async function login(email: string, password: string) {
 export async function logout() {
   try {
     await signOut(auth);
-    console.log("Signing out successfully");
-  } catch (error) {
-    console.error("Error signing out:", error);
-    throw error;
+    console.log("Logout successfully");
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Logout failed", errMessage);
+    throw errMessage;
   }
 }
 
@@ -57,11 +66,36 @@ export async function logout() {
 export async function resetPassword(email: string) {
   try {
     const resetPass = await sendPasswordResetEmail(auth, email);
-    console.log("Successfully reset password");
+    console.log("Sending password reset successful");
     return resetPass;
-  } catch (error) {
-    console.log("Error reset password:", error);
-    throw error;
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Sending password reset failed", errMessage);
+    throw errMessage;
+  }
+}
+
+//*Firebase Update Password
+export async function changePassword(user: User, newPassword: string) {
+  try {
+    await updatePassword(user, newPassword);
+    console.log("Password changed successfully");
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Password change failed:", errMessage);
+    throw errMessage;
+  }
+}
+
+//*Firebase Update Password
+export async function changeEmail(user: User, newEmail: string) {
+  try {
+    await updateEmail(user, newEmail);
+    console.log("Email changed successfully");
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Email change failed:", errMessage);
+    throw errMessage;
   }
 }
 
@@ -81,26 +115,28 @@ export function getAuthState(callback: (user: User | null) => void) {
 }
 
 //* Firebase Send Email Verification
-export function sendVerification() {
+export function sendVerification(user: User) {
   if (!auth.currentUser) {
     console.log("No authenticated user found");
     return;
   }
 
   try {
-    const sendVerification = sendEmailVerification(auth.currentUser);
+    const sendVerification = sendEmailVerification(user);
     console.log("Successfully email verification");
     return sendVerification;
   } catch (err) {
     console.log("Error sending email verfication", err);
   }
 }
-
+//* Firebase Account Deletion
 export async function deleteAccount(user: User) {
   try {
     await deleteUser(user);
-    console.log("Successfully deleted account");
-  } catch (err) {
-    console.log("Error deleting account", err);
+    console.log("Account deletion succesfull");
+  } catch (error: any) {
+    const errMessage = authErrors[error.code];
+    console.error("Account deletion failed", errMessage);
+    throw errMessage;
   }
 }

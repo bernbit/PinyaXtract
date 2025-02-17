@@ -13,12 +13,10 @@ export interface FirebaseRTDBType {
 }
 
 interface FirestoreUserDataType {
-  uid?: string;
-  name?: string;
-  username?: string;
-  email?: string;
-  password?: string;
-  mobileNum?: string;
-  role?: string;
-  profile?: string;
+  uid?: string | null;
+  name?: string | null;
+  email?: string | null;
+  password?: string | null;
+  profile?: string | null;
+  isAdmin?: boolean | null;
 }

@@ -2,7 +2,9 @@ import { storage } from "./config";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // Function to upload profile image
-export const uploadProfile = async (dataUrl: string) => {
+export const uploadProfile = async (
+  dataUrl: string | null,
+): Promise<string> => {
   try {
     const blob = await fetchBlobFromDataUrl(dataUrl);
     const fileName = generateFileName();
@@ -34,7 +36,7 @@ export const uploadProfile = async (dataUrl: string) => {
 };
 
 // Function to fetch blob data from data URL
-const fetchBlobFromDataUrl = async (dataUrl: string) => {
+const fetchBlobFromDataUrl = async (dataUrl: string): Promise<Blob> => {
   try {
     const response = await fetch(dataUrl);
     const blob = await response.blob();
@@ -45,30 +47,26 @@ const fetchBlobFromDataUrl = async (dataUrl: string) => {
 };
 
 // Function to generate a unique file name
-const generateFileName = () => {
+const generateFileName = (): string => {
   const timestamp = Date.now();
   return `${timestamp}.jpg`;
 };
 
 // Function to get the download URL after upload completion
-const getDownloadUrl = async (uploadTask) => {
-  try {
-    return new Promise((resolve, reject) => {
-      uploadTask.on(
-        "state_changed",
-        () => {},
-        (error) => reject(error),
-        async () => {
-          try {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve(downloadURL);
-          } catch (error) {
-            reject(error);
-          }
-        },
-      );
-    });
-  } catch (error) {
-    throw new Error("Error getting download URL after upload completion");
-  }
+const getDownloadUrl = (uploadTask: any): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      () => {},
+      (error: Error) => reject(error),
+      async () => {
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve(downloadURL);
+        } catch (error) {
+          reject(error);
+        }
+      },
+    );
+  });
 };

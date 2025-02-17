@@ -30,10 +30,7 @@ const index = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-main">
-      <ScrollView
-        contentContainerClassName="min-h-full"
-        removeClippedSubviews={true}
-      >
+      <ScrollView contentContainerClassName="flex min-h-full">
         {/* Header */}
         <TabHeader icon={"settings-remote"} title={"Control"} />
 
@@ -42,7 +39,7 @@ const index = () => {
             Machine Controls
           </Text>
           {/* Machine Switch */}
-          <View className="flex flex-row items-center justify-center rounded-lg bg-background p-9">
+          <View className="flex flex-1 flex-row items-center justify-center rounded-lg bg-background p-9">
             <Gear width={200} height={120} />
 
             <View className="flex items-center justify-center">
@@ -65,13 +62,13 @@ const index = () => {
             </View>
           </View>
 
-          <View className="flex flex-row gap-2 rounded-lg">
+          <View className="flex flex-1 flex-row gap-2 rounded-lg">
             {/* Fan Switch */}
-            <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
-              <View className="mt-4 flex basis-[80%] items-center">
+            <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
+              <View className="mt-4 flex items-center">
                 <Fan width={100} height={110} />
               </View>
-              <View className="flex flex-1 items-center justify-end">
+              <View className="flex items-center justify-end">
                 <Switch
                   className="scale-[1.4]"
                   trackColor={{
@@ -92,7 +89,7 @@ const index = () => {
             </View>
 
             {/* Heater Switch */}
-            <View className="flex flex-1 gap-4 rounded-lg bg-background py-9">
+            <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
               <View className="absolute right-0 top-0 m-0 flex w-full flex-row items-center justify-between px-2">
                 <Text className="px-2 font-satoshi-bold text-light-text">
                   {heaterManual ? "Manual" : "Auto"}
@@ -113,10 +110,10 @@ const index = () => {
                 />
               </View>
 
-              <View className="mt-4 basis-[80%] items-center">
+              <View className="mt-4 items-center">
                 <Heater width={100} height={110} />
               </View>
-              <View className="flex flex-1 items-center justify-end gap-1.5">
+              <View className="flex items-center justify-end gap-1.5">
                 <TripleSwitch />
 
                 <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
@@ -126,13 +123,13 @@ const index = () => {
             </View>
           </View>
 
-          <View className="flex flex-row gap-2 rounded-lg">
+          <View className="flex flex-1 flex-row gap-2 rounded-lg">
             {/* Extraction Level */}
-            <View className="flex flex-1 gap-5 rounded-lg bg-background py-9">
-              <View className="flex basis-[80%] items-center">
+            <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
+              <View className="flex items-center">
                 <Compress width={100} height={100} />
               </View>
-              <View className="flex flex-1 items-center justify-end gap-3">
+              <View className="flex items-center justify-end gap-3">
                 <InputButton
                   state={extractionLevel}
                   setState={setExtractionLevel}
@@ -149,11 +146,11 @@ const index = () => {
             </View>
 
             {/* Roller Speed */}
-            <View className="flex flex-1 gap-5 rounded-lg bg-background py-9">
-              <View className="flex basis-[80%] items-center">
+            <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
+              <View className="flex items-center">
                 <Roller width={145} height={110} />
               </View>
-              <View className="flex flex-1 items-center justify-end gap-3">
+              <View className="flex items-center justify-end gap-3">
                 <InputButton
                   state={rollerSpeed}
                   setState={setRollerSpeed}

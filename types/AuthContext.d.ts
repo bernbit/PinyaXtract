@@ -5,6 +5,9 @@ export interface AuthContextType {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean;
   currentUser?: Record<string, any> | null;
+  setCurrentUser?: React.Dispatch<
+    React.SetStateAction<Record<string, any> | null>
+  >;
 }
 
 interface AuthProviderProps {

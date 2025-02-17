@@ -1,5 +1,4 @@
 import { firestore } from "./config";
-// import { writeMobileNumber, removeMobileNumber } from "./database";
 
 import {
   setDoc,
@@ -17,7 +16,8 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 
-import { signup } from "./auth";
+//Types
+import { FirestoreUserDataType } from "@/types/FirebaseData";
 
 // * Store Device Token in Firestore
 // export async function storeDeviceToken(deviceToken) {
@@ -53,7 +53,7 @@ export async function getUserData(uid: string) {
       return userSnap.data();
     } else {
       console.log("No such user data!");
-      return null; // Explicitly return null to avoid "undefined" issues
+      return null;
     }
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -61,25 +61,30 @@ export async function getUserData(uid: string) {
   }
 }
 
-export async function getAllUserData(setUserData) {
+export async function getAllUserData(
+  setUserData: (data: FirestoreUserDataType[]) => void,
+): Promise<() => void> {
   try {
     const usersCollection = collection(firestore, "users");
 
-    // Initial data fetch
+    // Fetch Initial User Data List
     const usersSnapshot = await getDocs(usersCollection);
-    const initialUserData = [];
-    usersSnapshot.forEach((doc) => {
-      initialUserData.push({ id: doc.id, ...doc.data() });
-    });
-    setUserData(initialUserData); // Set initial data
+    const initialUserData: FirestoreUserDataType[] = usersSnapshot.docs.map(
+      (doc) => ({
+        ...doc.data(),
+      }),
+    );
+    //Assign Initial Value to a state
+    setUserData(initialUserData);
 
-    // Real-time listener for updates
+    // Realtime Listener Change to User Data List
     const unsubscribe = onSnapshot(usersCollection, (snapshot) => {
-      const updatedUserData = [];
-      snapshot.forEach((doc) => {
-        updatedUserData.push({ id: doc.id, ...doc.data() });
-      });
-      setUserData(updatedUserData); // Update data on change
+      const updatedUserData: FirestoreUserDataType[] = snapshot.docs.map(
+        (doc) => ({ ...doc.data() }),
+      );
+
+      //Assign Updated Value to a state
+      setUserData(updatedUserData);
     });
 
     // Return the unsubscribe function to clean up the listener when necessary
@@ -90,26 +95,15 @@ export async function getAllUserData(setUserData) {
   }
 }
 
-export async function addUserData(newData) {
+export async function addUserData(
+  newData: FirestoreUserDataType,
+  userUid: string,
+) {
   try {
-    // Create User Account to have UID
-    const userCredential = await signup(newData.email, newData.password);
-    const userUid = userCredential.user.uid;
-    console.log("New User Successful Signup");
-
-    const dateCreated = Date.now();
-    const dateSignIn = "";
-
     // Store User Data in Firestore
     const userRef = doc(firestore, "users", userUid);
-    const userData = {
-      ...newData,
-      uid: userUid,
-      created: dateCreated,
-      lastSignIn: dateSignIn,
-    };
-    await setDoc(userRef, userData);
-    // writeMobileNumber(userUid, userData.mobileNum);
+
+    await setDoc(userRef, newData);
     console.log("User data added to Firestore");
   } catch (error) {
     console.error("Error adding user data to Firestore:", error);
@@ -117,13 +111,14 @@ export async function addUserData(newData) {
   }
 }
 
-export async function updateUserData(uid: string, data) {
+export async function updateUserData(
+  updateData: Partial<FirestoreUserDataType>,
+  uid: string,
+) {
   const userRef = doc(firestore, "users", uid);
-  const { mobileNum } = data;
 
   try {
-    await updateDoc(userRef, data);
-    // writeMobileNumber(uid, mobileNum);
+    await updateDoc(userRef, updateData);
     console.log("User Data updated successfully!");
   } catch (error) {
     console.error("Error updating user data", error);
@@ -135,23 +130,9 @@ export async function deleteUserData(uid: string) {
 
   try {
     await deleteDoc(userRef);
-    // removeMobileNumber(uid);
-    console.log("User Data deleted successfully!");
+    console.log("User Data Deletion successfully!");
   } catch (error) {
-    console.error("Error deleting user data", error);
-  }
-}
-
-export async function updateLastSignIn(uid, data) {
-  const userRef = doc(firestore, "users", uid);
-
-  const signInData = { lastSignIn: data };
-
-  try {
-    await updateDoc(userRef, signInData);
-    console.log("User Last Sign in updated successfully!");
-  } catch (error) {
-    console.error("Error updating User Last Sign in", error);
+    console.error("User Data Deletion fail", error);
   }
 }
 

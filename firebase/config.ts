@@ -5,6 +5,7 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Supabase Credentials
 const firebaseConfig = {
   apiKey: "AIzaSyBvgmzFBU4F3t-ytAEP9Pn8j3Z_YvLiiAw",
   authDomain: "pinyaxtract.firebaseapp.com",

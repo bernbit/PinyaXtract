@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, Dimensions } from "react-native";
-import { Tabs } from "expo-router";
+import { Tabs, useSegments } from "expo-router";
 import TabHeader from "@/components/TabHeader";
 import { Colors } from "@/constants/Colors-Constants";
 import Animated, {
@@ -36,8 +36,19 @@ const _layout = () => {
     indicatorPosition.value = index * tabWidth;
   };
 
+  const segment: string[] = useSegments();
+
+  const [isTabScreen, setIsTabScreen] = useState<boolean>(true);
+  useEffect(() => {
+    const checkTabScreen = tabRoutes.some((route) =>
+      segment.includes(route.name),
+    );
+
+    setIsTabScreen(checkTabScreen);
+  }, [segment]);
+
   return (
-    <View className="flex-1 bg-main">
+    <View className={`flex-1 bg-main ${!isTabScreen ? "hidden" : ""}`}>
       <TabHeader icon={"admin-panel-settings"} title={"Admin"} />
       <View className="relative flex-1">
         <Tabs
@@ -65,7 +76,7 @@ const _layout = () => {
 
               return (
                 <Pressable
-                  className="relative flex-1 items-center justify-center"
+                  className="flex-1 items-center justify-center"
                   onPress={(event) => {
                     if (!isFocused) {
                       handleTabPress(tabIndex);
@@ -90,7 +101,7 @@ const _layout = () => {
         </Tabs>
 
         {/* Animated Indicator */}
-        <Animated.View style={[animatedIndicatorStyle]} />
+        {isTabScreen && <Animated.View style={[animatedIndicatorStyle]} />}
       </View>
     </View>
   );

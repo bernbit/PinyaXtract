@@ -24,20 +24,22 @@ import Dropdown from "@/components/forms/Dropdown";
 
 import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 
+//Expo Router
+import { useLocalSearchParams, useRouter } from "expo-router";
+
 //Types
 import { FirestoreUserDataType } from "@/types/FirebaseData";
 //Firebase
-import { changeEmail, changePassword, login } from "@/firebase/auth";
 import { updateUserData, getUserData } from "@/firebase/firestore";
+
 //Supabase
 import { uploadProfile } from "@/supabase/storage";
-//Context
-import useAuth from "@/context/AuthContext";
 
-const editProfile = () => {
-  //useAuth
-  const { currentUser } = useAuth();
-  const uid = currentUser?.user?.uid;
+const editUser = () => {
+  //Expo Router
+  const router = useRouter();
+  const { uid } = useLocalSearchParams();
+
   //useStates
   const [userData, setUserData] = useState<FirestoreUserDataType>({
     name: "",
@@ -46,14 +48,6 @@ const editProfile = () => {
     profile: "",
     isAdmin: false,
   });
-  const [userInitialData, setInitalUserData] = useState<FirestoreUserDataType>({
-    name: "",
-    email: "",
-    password: "",
-    profile: "",
-    isAdmin: false,
-  });
-
   const [role, setRole] = useState<string>("Select");
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -63,33 +57,31 @@ const editProfile = () => {
 
   //* useEffect for fetching user data
   useEffect(() => {
-    const loadUserData = async () => {
-      if (!uid) {
-        console.log("No UID Available");
-        return;
-      }
+    if (!uid) {
+      console.log("No UID Available");
+      setIsFetching(false);
+      return;
+    }
 
+    const LoadUserData = async () => {
       setIsFetching(true);
-
       try {
         const fetchUserData = await getUserData(String(uid));
-        if (!fetchUserData) {
+        if (fetchUserData) {
+          setUserData(fetchUserData as FirestoreUserDataType);
+          setProfileImage(fetchUserData?.profile);
+          setRole(fetchUserData?.isAdmin ? "admin" : "user");
+        } else {
           console.log("User data is null");
-          return;
         }
-
-        setUserData(fetchUserData);
-        setInitalUserData(fetchUserData);
-        setProfileImage(fetchUserData.profile);
-        setRole(fetchUserData.isAdmin ? "admin" : "user");
-      } catch (error) {
-        console.error("Unable to fetch user data:", error);
+      } catch (err) {
+        console.log("Unable to fetch user data", err);
       } finally {
         setIsFetching(false);
       }
     };
 
-    loadUserData();
+    LoadUserData();
   }, []);
 
   //Functions
@@ -110,32 +102,45 @@ const editProfile = () => {
   const handleEditProfile = async () => {
     setError("");
 
-    // Check if a change happen
-    if (JSON.stringify(userInitialData) === JSON.stringify(userData)) {
-      setError("No changes happen");
+    //Form Validation
+    if (!profileImage) {
+      setError("Please upload a profile image");
       return;
     }
 
-    // Form Validation
-    if (!profileImage) return setError("Please upload a profile image");
-    if (!userData.name) return setError("Name is required.");
-    if (!userData.email) return setError("Email is required.");
-    if (!/\S+@\S+\.\S+/.test(userData.email))
-      return setError("Email is invalid.");
-    if (!userData.password) return setError("Password is required.");
-    if (userData.password.length < 6)
-      return setError("Password must be at least 6 characters.");
-    if (role === "Select") return setError("Select a Role");
+    if (!userData.name) {
+      setError("Name is required.");
+      return;
+    }
+
+    if (!userData.email) {
+      setError("Email is required.");
+      return;
+    } else if (!/\S+@\S+\.\S+/.test(userData.email)) {
+      setError("Email is invalid.");
+      return;
+    }
+
+    if (!userData.password) {
+      setError("Password is required.");
+      return;
+    } else if (userData.password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (role === "Select") {
+      setError("Select a Role");
+      return;
+    }
 
     //setInputting to true
     setInputting(true);
 
     try {
       let profileImageUrl: string = profileImage;
-      let newEmail: string = userInitialData.email ?? "";
-      let newPassword: string = userInitialData.password ?? "";
 
-      // Upload profile image if necessary
+      // Only upload if profile image is local (not a URL)
       if (
         profileImage &&
         typeof profileImage === "string" &&
@@ -147,29 +152,15 @@ const editProfile = () => {
         }
       }
 
-      // Update password if changed
-      if (userData.password !== userInitialData.password) {
-        const { user } = await login(
-          userInitialData.email ?? "",
-          userInitialData.password ?? "",
-        );
-        await changePassword(user, userData.password);
-        newPassword = userData.password;
-      }
-
       // Combine Data
-      const updatedData = {
+      const newData = {
         ...userData,
-        email: String(newEmail),
-        password: String(newPassword),
         profile: String(profileImageUrl),
         isAdmin: role.toLowerCase() === "admin",
       };
 
       //Update User Data to Firestore
-      await updateUserData(updatedData, uid);
-      // Update User Initial Data State
-      setInitalUserData(updatedData);
+      await updateUserData(newData, String(uid));
       setShowModal(true);
     } catch (error: any) {
       setError(error.message || "An unexpected error occurred.");
@@ -253,7 +244,6 @@ const editProfile = () => {
                     onChangeText={(text: string) =>
                       handleInputChange("email", text)
                     }
-                    enabled={false}
                   />
 
                   <Input
@@ -266,6 +256,7 @@ const editProfile = () => {
                     onChangeText={(text: string) =>
                       handleInputChange("password", text)
                     }
+                    enabled={false}
                   />
 
                   <Dropdown
@@ -277,7 +268,6 @@ const editProfile = () => {
                     ]}
                     selectedValue={role.toLowerCase()}
                     onValueChange={(value) => setRole(value)}
-                    enable={false}
                   />
 
                   <TouchableOpacity
@@ -328,4 +318,4 @@ const editProfile = () => {
   );
 };
 
-export default editProfile;
+export default editUser;

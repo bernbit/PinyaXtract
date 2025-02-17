@@ -13,7 +13,7 @@ const index = () => {
   const [emailVal, setEmailVal] = useState("");
   const [passwordVal, setPasswordVal] = useState("");
 
-  const { setIsAuthenticated } = useAuth();
+  const { setIsAuthenticated, setCurrentUser } = useAuth();
   const router = useRouter();
 
   const [inputting, setInputting] = useState(false);
@@ -25,12 +25,10 @@ const index = () => {
       setError("");
       setInputting(true);
       const userCredential = await login(emailVal, passwordVal);
-
       await AsyncStorage.setItem("currentUser", JSON.stringify(userCredential));
       await AsyncStorage.setItem("isAuthenticated", JSON.stringify(true));
-
-      console.log("Successfully logged in");
       setIsAuthenticated(true);
+      setCurrentUser?.(userCredential);
       router.replace("/control");
     } catch (err) {
       console.log("Error", err);
@@ -70,7 +68,7 @@ const index = () => {
             placeholder="hello@pinyaxtract.com"
             error=""
             value={emailVal}
-            handleValueChange={setEmailVal}
+            onChangeText={(value: string) => setEmailVal(value)}
           />
 
           <Input
@@ -80,7 +78,7 @@ const index = () => {
             placeholder="***************"
             error=""
             value={passwordVal}
-            handleValueChange={setPasswordVal}
+            onChangeText={(value: string) => setPasswordVal(value)}
           />
 
           <Link href={"./resetPassword"} relativeToDirectory asChild>

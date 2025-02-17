@@ -39,15 +39,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getCurrentUser();
   }, []);
 
-  // if (isLoading) {
-  //   return;
-  // }
+  if (isLoading) {
+    return;
+  }
 
   const value = {
     isAuthenticated,
     setIsAuthenticated,
     isLoading,
     currentUser,
+    setCurrentUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

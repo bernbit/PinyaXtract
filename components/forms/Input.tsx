@@ -9,18 +9,16 @@ interface InputProps {
   type?: string;
   label?: string;
   error?: string;
-  value?: string;
-  handleValueChange?: (newValue: string) => void;
+  enabled?: boolean;
   [key: string]: any;
 }
 
 const Input = ({
   icon = "email",
-  type = "email",
+  type = "text",
   label = "Email Address",
   error = "",
-  value = "",
-  handleValueChange = () => {},
+  enabled = true,
   ...props
 }: InputProps) => {
   const [isFocus, setIsFocus] = useState<boolean>(false);
@@ -31,7 +29,7 @@ const Input = ({
       <Text className="py-1 font-satoshi text-primary">{label}</Text>
 
       <View
-        className={`flex h-12 flex-row items-center gap-2 rounded-md border px-2 leading-[1.25] ${isFocus ? "border-primary" : "border-light-text"} ${error ? "border-danger" : "border-light-text"} `}
+        className={`flex h-12 flex-row items-center gap-2 rounded-md border px-2 leading-[1.25] ${isFocus ? "border-primary" : "border-light-text"} ${error ? "border-danger" : "border-light-text"} ${!enabled ? "opacity-50" : ""}`}
       >
         <MaterialIcons name={icon} size={24} color={Colors.primary} />
         <TextInput
@@ -41,9 +39,8 @@ const Input = ({
           secureTextEntry={showPassword && type === "password"}
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
+          editable={enabled}
           {...props}
-          value={value}
-          onChangeText={handleValueChange}
         />
 
         {type === "password" && (
