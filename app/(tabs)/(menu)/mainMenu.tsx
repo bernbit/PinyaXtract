@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logout } from "@/firebase/auth";
 
 //Firebase
-import { getUserData } from "@/firebase/firestore";
+import { getUserDataRealtime } from "@/firebase/firestore";
 //Types
 import { FirestoreUserDataType } from "@/types/FirebaseData";
 //Context
@@ -23,49 +23,12 @@ import useAuth from "@/context/AuthContext";
 
 import MenuSkeleton from "@/components/skeleton/MenuSkeleton";
 
-// Types
-type PathType = "/editProfile" | "/changePass" | "/downloadReport" | "/about";
-interface OptionTypes {
-  title: string;
-  subtitle: string;
-  icon: keyof typeof MaterialIcons.glyphMap;
-  path: PathType;
-}
-
-const generalOptions: OptionTypes[] = [
-  {
-    title: "Edit Profile",
-    subtitle: "Change profile picture, name, number",
-    icon: "person",
-    path: "/editProfile",
-  },
-
-  // {
-  //   title: "Download Report",
-  //   subtitle: "Export and download this week report",
-  //   icon: "download",
-  //   path: "/downloadReport",
-  // },
-  {
-    title: "About PinyaXtract",
-    subtitle: "Learn more about PinyaXtract and its features",
-    icon: "info",
-    path: "/about",
-  },
-  {
-    title: "Delete your account",
-    subtitle: "Update and strengthen account security",
-    icon: "delete",
-    path: "/changePass",
-  },
-];
-
 const profile = () => {
   // Expo Router
   const router = useRouter();
   // useAuth
   const { setIsAuthenticated, currentUser } = useAuth();
-  const uid = currentUser?.user.uid;
+  const uid = currentUser?.user?.uid;
 
   // useStates
   const [userData, setUserData] = useState<FirestoreUserDataType>({
@@ -77,32 +40,47 @@ const profile = () => {
   });
   const [isFetching, setIsFetching] = useState<boolean>(true);
 
-  //* useEffect for fetching user data
-  useEffect(() => {
-    if (!uid) {
-      console.log("No UID Available");
-      return;
-    }
+  // Types
+  type PathType = "/editProfile" | "/deleteAcc" | "/downloadReport" | "/about";
+  interface OptionTypes {
+    title: string;
+    subtitle: string;
+    icon: keyof typeof MaterialIcons.glyphMap;
+    path: PathType;
+    color: string;
+  }
 
-    console.log("Main Menu User", uid);
+  const generalOptions: OptionTypes[] = [
+    {
+      title: "Edit Profile",
+      subtitle: "Change profile picture, name, number",
+      icon: "person",
+      path: "/editProfile",
+      color: Colors.primary,
+    },
 
-    const LoadUserData = async () => {
-      try {
-        setIsFetching(true);
-        const fetchUserData = await getUserData(String(uid));
-        if (fetchUserData) {
-          setUserData(fetchUserData as FirestoreUserDataType);
-          setIsFetching(false);
-        } else {
-          console.log("User data is null");
-        }
-      } catch (err) {
-        console.log("Unable to fetch user data", err);
-      }
-    };
-
-    LoadUserData();
-  }, []);
+    {
+      title: "Download Report",
+      subtitle: "Export and download this week report",
+      icon: "download",
+      path: "/downloadReport",
+      color: Colors.primary,
+    },
+    {
+      title: "About PinyaXtract",
+      subtitle: "Learn more about PinyaXtract and its features",
+      icon: "info",
+      path: "/about",
+      color: Colors.primary,
+    },
+    {
+      title: "Delete your account",
+      subtitle: "Permanently delete your account and data",
+      icon: "delete",
+      path: "/deleteAcc",
+      color: Colors.danger,
+    },
+  ];
 
   const handleLogout = async () => {
     try {
@@ -115,6 +93,33 @@ const profile = () => {
       console.log("Error removing user data from async storage", err);
     }
   };
+
+  //* useEffect for fetching user data in real-time
+  useEffect(() => {
+    if (!uid) {
+      console.log("No UID Available");
+      return;
+    }
+
+    console.log("Listening for User Data Changes", uid);
+
+    // Subscribe to real-time updates
+    const unsubscribe = getUserDataRealtime(uid, (newUserData) => {
+      if (newUserData) {
+        setUserData(newUserData as FirestoreUserDataType);
+        setIsFetching(false);
+      } else {
+        console.log("User data is null");
+      }
+    });
+
+    // Cleanup function to stop listening when the component unmounts
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [uid]); // Depend on `uid` to re-run when it changes
 
   return (
     <>
@@ -162,7 +167,7 @@ const profile = () => {
                         <MaterialIcons
                           name={option.icon}
                           size={25}
-                          color={Colors.primary}
+                          color={option.color}
                         />
                       </View>
 
@@ -179,7 +184,7 @@ const profile = () => {
                         <MaterialIcons
                           name={"chevron-right"}
                           size={35}
-                          color={Colors.primary}
+                          color={option.color}
                         />
                       </View>
                     </TouchableOpacity>

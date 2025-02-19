@@ -21,8 +21,8 @@ const _layout = () => {
       <Stack.Screen name="mainMenu" options={{ headerShown: false }} />
       <Stack.Screen name="editProfile" options={{ title: "Edit Profile" }} />
       <Stack.Screen
-        name="changePass"
-        options={{ title: "Change Password", headerShown: true }}
+        name="deleteAcc"
+        options={{ title: "Delete Account", headerShown: true }}
       />
       <Stack.Screen
         name="downloadReport"

@@ -4,6 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //Types
 import { AuthContextType, AuthProviderProps } from "@/types/AuthContext";
 
+//Loader
+import Loader from "@/components/Loader";
+
 //* Create a Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -39,8 +42,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getCurrentUser();
   }, []);
 
+  // !Important
   if (isLoading) {
-    return;
+    return <Loader />;
   }
 
   const value = {

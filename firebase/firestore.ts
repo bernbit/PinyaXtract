@@ -61,6 +61,34 @@ export async function getUserData(uid: string) {
   }
 }
 
+export function getUserDataRealtime(
+  uid: string,
+  setUserData: (userData: any) => void,
+) {
+  if (!uid) {
+    console.error("No UID stored in Firestore");
+    return;
+  }
+
+  const userRef = doc(firestore, "users", uid);
+
+  return onSnapshot(
+    userRef,
+    (userSnap) => {
+      if (userSnap.exists()) {
+        setUserData(userSnap.data());
+      } else {
+        console.log("No such user data!");
+        setUserData(null);
+      }
+    },
+    (error) => {
+      console.error("Error fetching user data:", error);
+      setUserData(null);
+    },
+  );
+}
+
 export async function getAllUserData(
   setUserData: (data: FirestoreUserDataType[]) => void,
 ): Promise<() => void> {

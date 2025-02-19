@@ -27,7 +27,7 @@ import ProfileSkeleton from "@/components/skeleton/ProfileSkeleton";
 //Types
 import { FirestoreUserDataType } from "@/types/FirebaseData";
 //Firebase
-import { changeEmail, changePassword, login } from "@/firebase/auth";
+import { changePassword, login } from "@/firebase/auth";
 import { updateUserData, getUserData } from "@/firebase/firestore";
 //Supabase
 import { uploadProfile } from "@/supabase/storage";

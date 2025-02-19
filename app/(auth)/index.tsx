@@ -21,29 +21,39 @@ const index = () => {
 
   //* Handle Form Submit
   const handleSubmit = async () => {
+    setError("");
+
+    // Form Validation
+    if (!emailVal) return setError("Email is required.");
+    if (!/\S+@\S+\.\S+/.test(emailVal)) return setError("Email is invalid.");
+    if (!passwordVal) return setError("Password is required.");
+    if (passwordVal.length < 6)
+      return setError("Password must be at least 6 characters.");
+
+    //setInputting to true
+    setInputting(true);
+
     try {
-      setError("");
-      setInputting(true);
       const userCredential = await login(emailVal, passwordVal);
       await AsyncStorage.setItem("currentUser", JSON.stringify(userCredential));
       await AsyncStorage.setItem("isAuthenticated", JSON.stringify(true));
       setIsAuthenticated(true);
       setCurrentUser?.(userCredential);
       router.replace("/control");
-    } catch (err) {
-      console.log("Error", err);
+    } catch (error: any) {
+      setError(error || "An unexpected error occurred.");
+    } finally {
+      setInputting(false);
     }
-
-    setInputting(false);
   };
 
   return (
     <ScrollView
-      contentContainerClassName=" flex h-full  bg-main justify-center px-3"
+      contentContainerClassName="flex h-full bg-background justify-center "
       keyboardShouldPersistTaps="handled"
     >
-      <View className="flex min-h-[80%] items-center gap-4 rounded-xl bg-background">
-        <View className="flex grow items-center gap-2 pb-8 pt-8">
+      <View className="flex min-h-full justify-center gap-20 rounded-xl bg-background px-4">
+        <View className="flex items-center gap-2">
           <SVG.Logo width={110} height={110} />
           <SVG.Wordmark />
           <Text className="text-center text-light-text">
@@ -54,12 +64,12 @@ const index = () => {
           </Text>
         </View>
 
-        <View className="flex w-10/12 grow gap-2">
-          {/* {error && (
-            <Text className="rounded-md bg-danger p-2 text-lg text-light-text">
+        <View className="flex gap-4">
+          {error && (
+            <Text className="rounded-md bg-danger p-2 font-satoshi-bold text-lg text-light-text">
               {error}
             </Text>
-          )} */}
+          )}
 
           <Input
             type="email"
@@ -95,12 +105,12 @@ const index = () => {
             disabled={inputting}
           >
             <Text className="text-center font-cabinetGrotesk-bold text-xl">
-              Login
+              {inputting ? "Logging In...." : "Login"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        <Text className="w-10/12 py-5 text-center text-light-text">
+        <Text className="text-center text-light-text">
           Fresh Leaves, Fine Fiber
         </Text>
       </View>
