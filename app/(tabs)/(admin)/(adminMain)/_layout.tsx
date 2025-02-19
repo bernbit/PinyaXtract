@@ -85,7 +85,7 @@ const _layout = () => {
                   }}
                 >
                   <Text
-                    className={`font-cabinetGrotesk-medium text-lg ${isFocused ? "text-light-text" : "text-dark-text"}`}
+                    className={`font-cabinetGrotesk-medium text-xl ${isFocused ? "text-light-text" : "text-dark-text"}`}
                   >
                     {tabConfig.title}
                   </Text>

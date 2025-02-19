@@ -19,9 +19,9 @@ const _layout = () => {
       <Stack.Screen
         name="resetPassword"
         options={{
-          title: "",
+          title: "Back",
           headerShown: true,
-          headerTitleAlign: "center",
+          // headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: Colors.background,
           },

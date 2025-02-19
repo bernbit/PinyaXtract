@@ -103,7 +103,7 @@ const _layout = () => {
   }
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-main">
       <Tabs
         screenOptions={({ route }) => ({
           headerShown: false,

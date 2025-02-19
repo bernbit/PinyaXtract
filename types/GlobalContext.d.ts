@@ -35,6 +35,8 @@ export interface GlobalContextType {
 
   weightRotation: number;
   setWeightRotation: React.Dispatch<React.SetStateAction<number>>;
+
+  timestamps: Record<string, any>;
 }
 
 interface GlobalProviderProps {

@@ -10,6 +10,7 @@ const Path = {
   Fan: "/Fan",
   Heater: "/Heater",
   HeaterManual: "/HeaterManual",
+  Timestamp: "/Timestamp",
 };
 
 //* Create a Context
@@ -35,6 +36,8 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   // Weight State
   const [weightValue, setWeightValue] = useState<number>(0);
   const [weightRotation, setWeightRotation] = useState<number>(-74);
+  //Timestamp
+  const [timestamps, setTimestamps] = useState<Record<string, any>>({});
 
   //! Functions
   // Machine Function
@@ -85,6 +88,7 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
         setFanState(data.Fan);
         setHeaterState(data.Heater);
         setHeaterManual(data.HeaterManual);
+        setTimestamps(data.Timestamp);
       });
     };
     fetchData();
@@ -124,6 +128,8 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
     setWeightValue,
     weightRotation,
     setWeightRotation,
+
+    timestamps,
   };
 
   return (
