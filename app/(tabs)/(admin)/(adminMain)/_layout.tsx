@@ -61,7 +61,7 @@ const _layout = () => {
               backgroundColor: "transparent",
               elevation: 0,
               borderTopWidth: 0,
-              borderColor: "none",
+              borderColor: Colors.background,
               zIndex: 20,
             },
             headerShadowVisible: false,

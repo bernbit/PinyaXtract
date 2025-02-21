@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  FlatList,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors-Constants";
 import { Link } from "expo-router";
@@ -37,64 +44,60 @@ const manageUsers = () => {
     fetchAllUserData();
   }, []);
 
+  //Flatlist Render Item
+  const userItem = ({ item: user }: { item: FirestoreUserDataType }) => {
+    // Hide current user from the list
+    if (currentUserUid === user?.uid) return null;
+
+    return (
+      <View className="flex flex-row items-center justify-between gap-2 bg-background p-3">
+        <View className="flex flex-row items-center gap-5">
+          {/* Profile Image */}
+          <View className="h-[60] w-[60]">
+            <Image
+              source={user?.profile ? { uri: user?.profile } : ProfileIcon}
+              className="h-full w-full rounded-full"
+            />
+          </View>
+          <View className="">
+            <Text className="font-satoshi-bold text-lg text-light-text">
+              {user?.name}
+            </Text>
+            <Text className="font-satoshi-regular text-sm text-light-text opacity-80">
+              {user.email}
+            </Text>
+          </View>
+        </View>
+
+        <View className="flex-row items-center gap-6">
+          <Link href={`/${user?.uid}/editUser`} asChild>
+            <TouchableOpacity>
+              <MaterialIcons name={"edit"} color={Colors.primary} size={30} />
+            </TouchableOpacity>
+          </Link>
+
+          <Link href={`/${user?.uid}/deleteUser`} asChild>
+            <TouchableOpacity>
+              <MaterialIcons name={"delete"} color={Colors.danger} size={30} />
+            </TouchableOpacity>
+          </Link>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <>
       {isFetching ? (
         <ManageUserSkeleton />
       ) : (
         <View className="flex-1 bg-main">
-          <ScrollView contentContainerClassName="">
-            <View className="flex-1">
-              {allUserData?.map((user, index) => (
-                <View
-                  className={`flex flex-row items-center justify-between gap-2 bg-background p-3 ${currentUserUid === user?.uid ? "hidden" : ""}`}
-                  key={index}
-                >
-                  <View className="flex flex-row items-center gap-5">
-                    {/* Profile Image */}
-                    <View className="h-[60] w-[60]">
-                      <Image
-                        source={
-                          user?.profile ? { uri: user?.profile } : ProfileIcon
-                        }
-                        className="h-full w-full rounded-full"
-                      />
-                    </View>
-                    <View className="">
-                      <Text className="font-satoshi-bold text-lg text-light-text">
-                        {user?.name}
-                      </Text>
-                      <Text className="font-satoshi-regular text-sm text-light-text opacity-80">
-                        {user.email}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View className="flex-row items-center gap-6">
-                    <Link href={`/${user?.uid}/editUser`} asChild>
-                      <TouchableOpacity>
-                        <MaterialIcons
-                          name={"edit"}
-                          color={Colors.primary}
-                          size={30}
-                        />
-                      </TouchableOpacity>
-                    </Link>
-
-                    <Link href={`/${user?.uid}/deleteUser`} asChild>
-                      <TouchableOpacity>
-                        <MaterialIcons
-                          name={"delete"}
-                          color={Colors.danger}
-                          size={30}
-                        />
-                      </TouchableOpacity>
-                    </Link>
-                  </View>
-                </View>
-              ))}
-            </View>
-          </ScrollView>
+          <FlatList
+            data={allUserData}
+            keyExtractor={(item) => item.uid || ""}
+            renderItem={userItem}
+            contentContainerClassName="pb-16"
+          />
 
           <Link href="/addUser" asChild>
             <TouchableOpacity className="absolute bottom-2 right-2 rounded-full bg-primary p-2.5">

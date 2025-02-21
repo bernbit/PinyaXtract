@@ -63,6 +63,51 @@ const index = () => {
           </View>
 
           <View className="flex flex-1 flex-row gap-2 rounded-lg">
+            {/* Extraction Level */}
+            {/* <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
+              <View className="flex items-center">
+                <Compress width={100} height={100} />
+              </View>
+              <View className="flex items-center justify-end gap-3">
+                <InputButton
+                  state={extractionLevel}
+                  setState={setExtractionLevel}
+                  min={1}
+                  max={5}
+                  defaultVal={1}
+                  setValue={0.5}
+                  path={"/ExtractionLevel"}
+                />
+                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
+                  Extraction Level
+                </Text>
+              </View>
+            </View> */}
+
+            {/* Roller Speed */}
+            <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
+              <View className="flex items-center">
+                <Roller width={145} height={110} />
+              </View>
+              <View className="flex items-center justify-end gap-3">
+                <InputButton
+                  state={rollerSpeed}
+                  setState={setRollerSpeed}
+                  min={0}
+                  max={255}
+                  defaultVal={5}
+                  setValue={5}
+                  path={"/RollerSpeed"}
+                />
+
+                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
+                  Roller Speed
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View className="flex flex-1 flex-row gap-2 rounded-lg">
             {/* Fan Switch */}
             <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
               <View className="mt-4 flex items-center">
@@ -118,51 +163,6 @@ const index = () => {
 
                 <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
                   {heaterState === "off" ? "Heater Off" : "Heater On"}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          <View className="flex flex-1 flex-row gap-2 rounded-lg">
-            {/* Extraction Level */}
-            <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
-              <View className="flex items-center">
-                <Compress width={100} height={100} />
-              </View>
-              <View className="flex items-center justify-end gap-3">
-                <InputButton
-                  state={extractionLevel}
-                  setState={setExtractionLevel}
-                  min={1}
-                  max={5}
-                  defaultVal={1}
-                  setValue={0.5}
-                  path={"/ExtractionLevel"}
-                />
-                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
-                  Extraction Level
-                </Text>
-              </View>
-            </View>
-
-            {/* Roller Speed */}
-            <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
-              <View className="flex items-center">
-                <Roller width={145} height={110} />
-              </View>
-              <View className="flex items-center justify-end gap-3">
-                <InputButton
-                  state={rollerSpeed}
-                  setState={setRollerSpeed}
-                  min={0}
-                  max={255}
-                  defaultVal={5}
-                  setValue={5}
-                  path={"/RollerSpeed"}
-                />
-
-                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
-                  Roller Speed
                 </Text>
               </View>
             </View>

@@ -33,6 +33,24 @@ const inventory = () => {
 
   return (
     <View className="flex-1 bg-main">
+      {/* Time Picker */}
+      {/* <View className="px-4 py-4">
+          <View className="flex flex-row gap-2 border border-background/80">
+            <Text className="flex-1 bg-background p-2 text-center font-satoshi-medium text-lg text-light-text">
+              Live
+            </Text>
+            <Text className="flex-1 rounded-md p-2 text-center font-satoshi-medium text-lg text-dark-text">
+              1H
+            </Text>
+            <Text className="flex-1 rounded-md p-2 text-center font-satoshi-medium text-lg text-dark-text">
+              1D
+            </Text>
+            <Text className="flex-1 rounded-md p-2 text-center font-satoshi-medium text-lg text-dark-text">
+              1W
+            </Text>
+          </View>
+        </View> */}
+
       <View className="flex-1">
         <View className="px-6 py-4">
           <View className="flex flex-row items-center justify-center gap-2 rounded-md bg-background px-4 py-4">

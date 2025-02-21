@@ -38,6 +38,8 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   const [weightRotation, setWeightRotation] = useState<number>(-74);
   //Timestamp
   const [timestamps, setTimestamps] = useState<Record<string, any>>({});
+  //Expo Push Token
+  const [expoPushToken, setExpoPushToken] = useState<string>("");
 
   //! Functions
   // Machine Function
@@ -130,6 +132,9 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
     setWeightRotation,
 
     timestamps,
+
+    expoPushToken,
+    setExpoPushToken,
   };
 
   return (

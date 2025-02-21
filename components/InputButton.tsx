@@ -26,12 +26,7 @@ const InputButton = ({
 }: InputButtonProps) => {
   const [localInput, setLocalInput] = useState<string>(`${state}`);
 
-  const handleStateChange = (
-    value: number,
-    type: "add" | "subtract",
-    min: number,
-    max: number,
-  ) => {
+  const handleStateChange = (value: number, type: "add" | "subtract") => {
     setState((prevValue) => {
       let newValue = prevValue;
 
@@ -41,6 +36,7 @@ const InputButton = ({
         newValue = Math.max(prevValue - value, min);
       }
 
+      setLocalInput(`${newValue}`);
       writeData(path, newValue);
 
       return newValue;
@@ -51,9 +47,6 @@ const InputButton = ({
     const regex = /^[0-9]*\.?[0-9]*$/;
     if (input === "" || regex.test(input)) {
       setLocalInput(input);
-    } else {
-      setLocalInput("");
-      return;
     }
   };
 
@@ -80,12 +73,16 @@ const InputButton = ({
   };
 
   return (
-    <View className="flex h-9 w-[60%] flex-row">
+    <View className="flex h-9 w-[140px] flex-row">
       {/* Minus (-) */}
       <TouchableOpacity
         className={`flex items-center justify-center bg-secondary px-2 ${state <= min ? "opacity-55" : ""}`}
-        onPress={() => handleStateChange(setValue, "subtract", min, max)}
-        onLongPress={() => setState(min)}
+        onPress={() => handleStateChange(setValue, "subtract")}
+        onLongPress={() => {
+          setState(min);
+          setLocalInput(`${min}`);
+          writeData(path, min);
+        }}
         disabled={state <= min}
       >
         <AntDesign name="minus" size={15} color={Colors["light-text"]} />
@@ -96,7 +93,7 @@ const InputButton = ({
         keyboardType="numeric"
         onChangeText={handleInputChange}
         onBlur={handleBlur}
-        placeholder={`${defaultVal}`}
+        placeholder={state === defaultVal ? `${defaultVal}` : ""}
         value={localInput}
         maxLength={6}
       />
@@ -104,8 +101,12 @@ const InputButton = ({
       {/* Plus (+) */}
       <TouchableOpacity
         className={`flex items-center justify-center bg-secondary px-2 ${state >= max ? "opacity-55" : ""}`}
-        onPress={() => handleStateChange(setValue, "add", min, max)}
-        onLongPress={() => setState(max)}
+        onPress={() => handleStateChange(setValue, "add")}
+        onLongPress={() => {
+          setState(max);
+          setLocalInput(`${max}`);
+          writeData(path, max);
+        }}
         disabled={state >= max}
       >
         <AntDesign name="plus" size={15} color={Colors["light-text"]} />

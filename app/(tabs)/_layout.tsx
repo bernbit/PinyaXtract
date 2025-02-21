@@ -1,25 +1,38 @@
 import React, { useState, useEffect } from "react";
+import { View, Text, Pressable, Dimensions } from "react-native";
 import { Tabs, useRouter, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "@/constants/Colors-Constants";
-import {
-  View,
-  Text,
-  Pressable,
-  Dimensions,
-  ActivityIndicator,
-} from "react-native";
+// Expo Push Notification
+import { Platform } from "react-native";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+//Custom Components
 import Badge from "@/components/Badge";
+import Loader from "@/components/Loader";
+//Constants
+import { Colors } from "@/constants/Colors-Constants";
+//Reanimated
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
 } from "react-native-reanimated";
+//Context
 import useAuth from "@/context/AuthContext";
-
+import useGlobal from "@/context/GlobalContext";
+//Firebase
 import { getUserData } from "@/firebase/firestore";
+import { storeDeviceToken } from "@/firebase/firestore";
 
-import Loader from "@/components/Loader";
+// Notification Config
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 //Tab Routes
 const tabRoutes = [
@@ -32,14 +45,80 @@ const tabRoutes = [
 const screenWidth = Dimensions.get("window").width;
 
 const _layout = () => {
-  //Authentication
+  //Expo Router
+  const router = useRouter();
+  //useAuth
   const { isAuthenticated, currentUser } = useAuth();
   const uid = currentUser?.user?.uid;
-
-  const router = useRouter();
-
+  //useGlobal
+  const { expoPushToken, setExpoPushToken } = useGlobal();
+  //States
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(true);
+
+  //Functions
+  const handleRegistrationError = (errorMessage: string) => {
+    console.error(errorMessage);
+    alert(errorMessage);
+  };
+
+  const registerForPushNotificationsAsync = async () => {
+    try {
+      if (Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: "#FF231F7C",
+          enableLights: true,
+          enableVibrate: true,
+          bypassDnd: true,
+          sound: "default",
+        });
+      }
+
+      if (!Device.isDevice) {
+        handleRegistrationError(
+          "Must use a physical device for push notifications.",
+        );
+        return null;
+      }
+
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      if (finalStatus !== "granted") {
+        handleRegistrationError(
+          "Permission not granted for push notifications.",
+        );
+        return null;
+      }
+
+      const projectId =
+        Constants?.expoConfig?.extra?.eas?.projectId ??
+        Constants?.easConfig?.projectId;
+      if (!projectId) {
+        handleRegistrationError("Project ID not found.");
+        return null;
+      }
+
+      const pushTokenString = (
+        await Notifications.getExpoPushTokenAsync({ projectId })
+      ).data;
+
+      console.log("Push Token:", pushTokenString);
+      return pushTokenString;
+    } catch (error) {
+      handleRegistrationError(`Error registering for notifications: ${error}`);
+      return null;
+    }
+  };
 
   //* useEffect for fetching user data
   useEffect(() => {
@@ -67,6 +146,23 @@ const _layout = () => {
     LoadUserData();
   }, [uid]);
 
+  //*useEffect to regsiter Expo Push Token
+  useEffect(() => {
+    const registerToken = async () => {
+      const token = await registerForPushNotificationsAsync();
+      if (token && isAuthenticated) {
+        setExpoPushToken(token);
+        await storeDeviceToken(uid, token);
+      }
+    };
+
+    registerToken();
+
+    return () => {
+      // Cleanup function if needed
+    };
+  }, []);
+
   const visibleTabRoutes = isAdmin
     ? tabRoutes
     : tabRoutes.filter((tab) => tab.name !== "(admin)");
@@ -92,13 +188,11 @@ const _layout = () => {
     borderTopColor: Colors.primary,
     borderTopWidth: 2.5,
   }));
-
   const handleTabPress = (index: number): void => {
     indicatorPosition.value = index * tabWidth;
   };
 
   if (isFetching) {
-    // Show loading spinner while data is being fetched
     return <Loader />;
   }
 

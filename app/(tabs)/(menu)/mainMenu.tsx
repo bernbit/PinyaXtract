@@ -15,11 +15,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logout } from "@/firebase/auth";
 
 //Firebase
-import { getUserDataRealtime } from "@/firebase/firestore";
+import { getUserDataRealtime, removeDeviceToken } from "@/firebase/firestore";
 //Types
 import { FirestoreUserDataType } from "@/types/FirebaseData";
 //Context
 import useAuth from "@/context/AuthContext";
+import useGlobal from "@/context/GlobalContext";
 
 import MenuSkeleton from "@/components/skeleton/MenuSkeleton";
 
@@ -29,6 +30,8 @@ const profile = () => {
   // useAuth
   const { setIsAuthenticated, currentUser } = useAuth();
   const uid = currentUser?.user?.uid;
+  //useGlobal
+  const { expoPushToken } = useGlobal();
 
   // useStates
   const [userData, setUserData] = useState<FirestoreUserDataType>({
@@ -84,7 +87,10 @@ const profile = () => {
 
   const handleLogout = async () => {
     try {
-      logout();
+      await logout();
+      if (uid) {
+        await removeDeviceToken(uid, expoPushToken);
+      }
       await AsyncStorage.removeItem("currentUser");
       await AsyncStorage.setItem("isAuthenticated", JSON.stringify(false));
       setIsAuthenticated(false);
@@ -131,8 +137,8 @@ const profile = () => {
             {/* Header */}
             <TabHeader icon={"menu"} title={"Menu"} />
 
-            <View className="flex flex-1 gap-2 px-2.5">
-              {/* Header */}
+            <View className="mb-5 flex flex-1 gap-2 px-2.5">
+              {/* Body */}
               <View className="flex flex-row items-center gap-4 rounded-md bg-background px-3 py-3">
                 <View className="h-[60] w-[60] rounded-full bg-red-500">
                   <Image

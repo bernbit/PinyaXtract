@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "598516128079",
+    "firebase_url": "https://pinyaxtract-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pinyaxtract",
+    "storage_bucket": "pinyaxtract.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598516128079:android:b89e40c048a09583804d3a",
+        "android_client_info": {
+          "package_name": "com.pinyaxtract.iot"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtqtlR2Sr1-KV2iqQRweoR2L0oqCbQG7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

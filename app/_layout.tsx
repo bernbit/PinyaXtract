@@ -1,8 +1,8 @@
-import { Stack } from "expo-router";
 import "../global.css";
+import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AuthProvider } from "@/context/AuthContext";
 import { GlobalProvider } from "@/context/GlobalContext";
@@ -45,10 +45,9 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <GlobalProvider>
-        <SafeAreaProvider className="">
+        <SafeAreaProvider>
           <Stack>
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           </Stack>
         </SafeAreaProvider>

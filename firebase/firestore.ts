@@ -1,5 +1,4 @@
 import { firestore } from "./config";
-
 import {
   setDoc,
   doc,
@@ -9,35 +8,14 @@ import {
   onSnapshot,
   updateDoc,
   deleteDoc,
-  serverTimestamp,
   query,
-  where,
-  addDoc,
+  orderBy,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 
 //Types
 import { FirestoreUserDataType } from "@/types/FirebaseData";
-
-// * Store Device Token in Firestore
-// export async function storeDeviceToken(deviceToken) {
-//   const tokenRef = doc(firestore, "tokens", deviceToken); // Using deviceToken as document ID
-
-//   try {
-//     // * Check if the document already exists
-//     const tokenDoc = await getDoc(tokenRef);
-//     if (tokenDoc.exists()) {
-//       console.log("Device Token already exists in Firestore");
-//       return; // Exit function if document already exists
-//     }
-
-//     // * Document doesn't exist, so store it
-//     await setDoc(tokenRef, { id: deviceToken });
-//     console.log("Device Token stored in Firestore");
-//   } catch (error) {
-//     console.error("Error storing Device Token in Firestore: ", error);
-//   }
-// }
 
 export async function getUserData(uid: string) {
   if (!uid) {
@@ -164,10 +142,39 @@ export async function deleteUserData(uid: string) {
   }
 }
 
-export async function storeDeviceToken(uid, uniqueToken) {
+export async function storeDeviceToken(uid: string, uniqueToken: string) {
+  const userRef = doc(firestore, "users", uid);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+    const existingTokens: string[] = userDoc.data()?.expoPushTokens || [];
+
+    if (!existingTokens.includes(uniqueToken)) {
+      // ✅ Only update if the token is not already stored
+      try {
+        await updateDoc(userRef, {
+          expoPushTokens: arrayUnion(uniqueToken),
+        });
+      } catch (error) {
+        console.error("Error storing Device Token in Firestore: ", error);
+      }
+    }
+  } else {
+    // If the user document doesn't exist, create it with the new token
+    try {
+      await setDoc(userRef, {
+        expoPushTokens: [uniqueToken],
+      });
+    } catch (error) {
+      console.error("Error creating user document in Firestore: ", error);
+    }
+  }
+}
+
+export async function removeDeviceToken(uid: string, uniqueToken: string) {
   const userRef = doc(firestore, "users", uid);
   const token = {
-    deviceToken: arrayUnion(uniqueToken),
+    expoPushTokens: arrayRemove(uniqueToken),
   };
 
   try {
@@ -177,48 +184,49 @@ export async function storeDeviceToken(uid, uniqueToken) {
   }
 }
 
-// export async function storeDeviceToken(uid, token) {
-//   const userRef = doc(firestore, "users", uid);
-//   const tokensCollectionRef = collection(userRef, "deviceTokens");
+export function getAllNotification(
+  setNotificationList: (notifications: any) => void,
+) {
+  const notificationRef = collection(firestore, "notifications");
 
-//   try {
-//     // Query to check if the token already exists
-//     const tokenQuery = query(tokensCollectionRef, where("token", "==", token));
-//     const querySnapshot = await getDocs(tokenQuery);
+  // Query Firestore to order by timestamp (newest first)
+  const q = query(notificationRef, orderBy("timestamp", "desc"));
 
-//     if (querySnapshot.empty) {
-//       // Token doesn't exist, add it
-//       await addDoc(tokensCollectionRef, {
-//         token: token,
-//         createdAt: serverTimestamp(),
-//       });
-//       console.log("Token successfully stored!");
-//     } else {
-//       console.log("Token already exists, not adding it.");
-//     }
+  return onSnapshot(
+    q,
+    (notifSnap) => {
+      if (!notifSnap.empty) {
+        const notifications = notifSnap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-//     // Ensure only one instance of the token exists
-//     const allTokensSnapshot = await getDocs(tokensCollectionRef);
-//     let found = false;
-//     const batch = firestore.batch();
+        setNotificationList(notifications);
+      } else {
+        console.log("No notifications found!");
+        setNotificationList([]);
+      }
+    },
+    (error) => {
+      console.error("Error fetching notifications:", error);
+      setNotificationList([]);
+    },
+  );
+}
 
-//     allTokensSnapshot.forEach((doc) => {
-//       if (doc.data().token === token) {
-//         if (found) {
-//           // If a duplicate is found, mark it for deletion
-//           batch.delete(doc.ref);
-//         } else {
-//           found = true; // Mark the first occurrence
-//         }
-//       }
-//     });
+export function deleteNotification(docId: string) {
+  const notifRef = doc(firestore, "notifications", docId);
+  deleteDoc(notifRef);
+}
 
-//     // Commit the batch delete if there are duplicates
-//     if (found) {
-//       await batch.commit();
-//       console.log("Duplicate tokens removed.");
-//     }
-//   } catch (error) {
-//     console.error("Error handling token: ", error);
-//   }
-// }
+export async function deleteAllNotifications() {
+  const notifCollectionRef = collection(firestore, "notifications");
+  const querySnapshot = await getDocs(notifCollectionRef);
+
+  const deletePromises = querySnapshot.docs.map((document) =>
+    deleteDoc(doc(firestore, "notifications", document.id)),
+  );
+
+  await Promise.all(deletePromises);
+  console.log("All notifications deleted successfully.");
+}
