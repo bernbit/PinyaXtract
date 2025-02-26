@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, TextInput } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Colors } from "@/constants/Colors-Constants";
@@ -25,6 +25,10 @@ const InputButton = ({
   path,
 }: InputButtonProps) => {
   const [localInput, setLocalInput] = useState<string>(`${state}`);
+
+  useEffect(() => {
+    setLocalInput(`${state}`);
+  }, [state]);
 
   const handleStateChange = (value: number, type: "add" | "subtract") => {
     setState((prevValue) => {

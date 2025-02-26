@@ -6,7 +6,7 @@ import SVG from "@/constants/SVG-Constants";
 
 const about = () => {
   return (
-    <SafeAreaView className="flex-1 bg-main">
+    <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
       <ScrollView contentContainerClassName="min-h-full">
         {/* Wrapper */}
         <View className="flex flex-1 justify-center px-2.5 py-3">

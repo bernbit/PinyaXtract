@@ -1,20 +1,24 @@
 import React from "react";
 import { Stack } from "expo-router";
 import { Colors } from "@/constants/Colors-Constants";
+import { useColorScheme } from "nativewind";
 
 const _layout = () => {
+  const { colorScheme } = useColorScheme();
   return (
     <Stack
       screenOptions={{
         headerShown: true,
         headerTitleAlign: "center",
         headerStyle: {
-          backgroundColor: Colors.main,
+          backgroundColor:
+            colorScheme === "dark" ? Colors["dark-main"] : Colors.main,
         },
         headerTitleStyle: {
           fontFamily: "CabinetGrotesk-Extrabold",
         },
-        headerTintColor: Colors["dark-text"],
+        headerTintColor:
+          colorScheme === "dark" ? Colors["light-text"] : Colors["dark-text"],
         // headerShadowVisible: false, // Ensures shadow is hidden
       }}
     >

@@ -29,13 +29,13 @@ const index = () => {
   } = useGlobal();
 
   return (
-    <SafeAreaView className="flex-1 bg-main">
+    <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
       <ScrollView contentContainerClassName="flex min-h-full">
         {/* Header */}
         <TabHeader icon={"settings-remote"} title={"Control"} />
 
         <View className="mb-5 flex flex-1 justify-center gap-2 px-2.5">
-          <Text className="font-satoshi-bold text-lg text-dark-text">
+          <Text className="font-satoshi-bold text-lg text-dark-text dark:text-light-text">
             Machine Controls
           </Text>
           {/* Machine Switch */}
@@ -135,7 +135,7 @@ const index = () => {
 
             {/* Heater Switch */}
             <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
-              <View className="absolute right-0 top-0 m-0 flex w-full flex-row items-center justify-between px-2">
+              <View className="absolute right-0 top-1 m-0 flex w-full flex-1 flex-row items-center justify-between px-2">
                 <Text className="px-2 font-satoshi-bold text-light-text">
                   {heaterManual ? "Manual" : "Auto"}
                 </Text>

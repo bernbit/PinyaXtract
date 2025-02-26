@@ -111,7 +111,10 @@ const editProfile = () => {
     setError("");
 
     // Check if a change happen
-    if (JSON.stringify(userInitialData) === JSON.stringify(userData)) {
+    if (
+      JSON.stringify(userInitialData) ===
+      JSON.stringify({ ...userData, profile: String(profileImage) })
+    ) {
       setError("No changes happen");
       return;
     }
@@ -192,7 +195,7 @@ const editProfile = () => {
       {isFetching ? (
         <ProfileSkeleton />
       ) : (
-        <SafeAreaView className="flex-1 bg-main">
+        <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
           <ScrollView contentContainerClassName="min-h-full">
             {/* Wrapper */}
             <View className="flex flex-1 justify-center px-2.5 py-2.5">

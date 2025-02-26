@@ -32,7 +32,7 @@ const inventory = () => {
     });
 
   return (
-    <View className="flex-1 bg-main">
+    <View className="dark:bg-dark-main flex-1 bg-main">
       {/* Time Picker */}
       {/* <View className="px-4 py-4">
           <View className="flex flex-row gap-2 border border-background/80">
@@ -83,13 +83,13 @@ const inventory = () => {
             renderItem={({ item }) => (
               <View className="flex flex-row border border-dark-text/20">
                 <View className="flex-1 px-4 py-4">
-                  <Text className="text-center font-satoshi-bold text-dark-text">
+                  <Text className="text-center font-satoshi-bold text-dark-text dark:text-light-text">
                     {formatDate(+item)}
                   </Text>
                 </View>
 
                 <View className="flex-1 border-l border-dark-text/20 px-4 py-4">
-                  <Text className="text-center font-satoshi-bold text-dark-text">
+                  <Text className="text-center font-satoshi-bold text-dark-text dark:text-light-text">
                     {formatTime(+item)}
                   </Text>
                 </View>

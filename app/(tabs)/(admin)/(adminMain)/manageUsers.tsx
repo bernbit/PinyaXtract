@@ -91,7 +91,7 @@ const manageUsers = () => {
       {isFetching ? (
         <ManageUserSkeleton />
       ) : (
-        <View className="flex-1 bg-main">
+        <View className="dark:bg-dark-main flex-1 bg-main">
           <FlatList
             data={allUserData}
             keyExtractor={(item) => item.uid || ""}

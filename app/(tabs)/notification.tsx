@@ -9,14 +9,18 @@ import {
 import TabHeader from "@/components/TabHeader";
 import SVG from "@/constants/SVG-Constants";
 import { MaterialIcons } from "@expo/vector-icons";
+import NotificationSkeleton from "@/components/skeleton/NotificationSkeleton";
 
 // Firebase
 import {
   getAllNotification,
   deleteNotification,
   deleteAllNotifications,
+  getUserData,
 } from "@/firebase/firestore";
 import { Timestamp } from "firebase/firestore";
+//Context
+import useAuth from "@/context/AuthContext";
 
 // Type
 interface NotifType {
@@ -55,6 +59,10 @@ const notification = () => {
   const [isFetching, setIsFetching] = useState(true);
   const [emptyNotif, setEmptyNotif] = useState(false);
   const [timestamps, setTimestamps] = useState<{ [key: string]: string }>({});
+
+  const { currentUser } = useAuth();
+  const uid = currentUser?.user?.uid;
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     const unsubscribe = getAllNotification((notifList) => {
@@ -109,6 +117,32 @@ const notification = () => {
     return () => clearInterval(interval);
   }, [sections]);
 
+  //* useEffect for fetching user data
+  useEffect(() => {
+    if (!uid) {
+      console.log("No UID Available");
+      setIsFetching(false);
+      return;
+    }
+
+    const LoadUserData = async () => {
+      try {
+        const fetchUserData = await getUserData(String(uid));
+        if (fetchUserData) {
+          setIsAdmin(fetchUserData.isAdmin);
+        } else {
+          console.log("User data is null");
+        }
+      } catch (err) {
+        console.log("Unable to fetch user data", err);
+      } finally {
+        setIsFetching(false); // Data fetched or failed, stop loading
+      }
+    };
+
+    LoadUserData();
+  }, [uid]);
+
   // Render each notification item
   const renderItem = ({ item }: { item: NotifType }) => (
     <View className="bg-background py-3">
@@ -135,48 +169,51 @@ const notification = () => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          className="justify-center"
-          onPress={() => deleteNotification(item.id)}
-        >
-          <MaterialIcons name="delete" size={24} color="red" />
-        </TouchableOpacity>
+        {isAdmin && (
+          <TouchableOpacity
+            className="justify-center"
+            onPress={() => deleteNotification(item.id)}
+          >
+            <MaterialIcons name="delete" size={24} color="red" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
 
-  //Loading
-  if (isFetching)
-    return (
-      <View>
-        <Text>ssasas</Text>
-      </View>
-    );
-
   return (
-    <SafeAreaView className="flex-1 bg-main">
-      <TabHeader icon="notifications" title="Notifications" />
+    <>
+      <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
+        <TabHeader icon="notifications" title="Notifications" />
+        {isFetching ? (
+          <NotificationSkeleton />
+        ) : (
+          <View className={`flex-1 ${emptyNotif ? "hidden" : "flex"}`}>
+            {isAdmin && (
+              <TouchableOpacity
+                onPress={async () => await deleteAllNotifications()}
+              >
+                <Text className="px-2.5 text-right font-satoshi-bold text-lg text-danger">
+                  Delete All
+                </Text>
+              </TouchableOpacity>
+            )}
 
-      <View className={`flex-1 ${emptyNotif ? "hidden" : "flex"}`}>
-        <TouchableOpacity onPress={async () => await deleteAllNotifications()}>
-          <Text className="px-2.5 text-right font-satoshi-bold text-lg text-danger">
-            Delete All
-          </Text>
-        </TouchableOpacity>
-
-        <SectionList
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          renderItem={renderItem}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text className="px-2.5 pb-2 font-satoshi-bold text-lg">
-              {title}
-            </Text>
-          )}
-          // contentContainerClassName="pb-16"
-        />
-      </View>
-    </SafeAreaView>
+            <SectionList
+              sections={sections}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              renderSectionHeader={({ section: { title } }) => (
+                <Text className="px-2.5 pb-2 font-satoshi-bold text-lg text-dark-text dark:text-light-text">
+                  {title}
+                </Text>
+              )}
+              // contentContainerClassName="pb-16"
+            />
+          </View>
+        )}
+      </SafeAreaView>
+    </>
   );
 };
 

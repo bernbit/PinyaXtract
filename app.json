@@ -15,7 +15,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1F4A4E"
       },
       "package": "com.pinyaxtract.iot",
       "googleServicesFile": "./google-services.json"
@@ -31,9 +31,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#1F4A4E"
         }
       ]
     ],
@@ -48,6 +47,12 @@
         "projectId": "366b2013-1a8b-4021-94b4-142efafdbb5f"
       }
     },
-    "owner": "loganaxie21"
+    "owner": "loganaxie21",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/366b2013-1a8b-4021-94b4-142efafdbb5f"
+    }
   }
 }

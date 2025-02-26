@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Switch,
 } from "react-native";
 import TabHeader from "@/components/TabHeader";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -23,6 +24,8 @@ import useAuth from "@/context/AuthContext";
 import useGlobal from "@/context/GlobalContext";
 
 import MenuSkeleton from "@/components/skeleton/MenuSkeleton";
+
+import { useColorScheme } from "nativewind";
 
 const profile = () => {
   // Expo Router
@@ -62,13 +65,13 @@ const profile = () => {
       color: Colors.primary,
     },
 
-    {
-      title: "Download Report",
-      subtitle: "Export and download this week report",
-      icon: "download",
-      path: "/downloadReport",
-      color: Colors.primary,
-    },
+    // {
+    //   title: "Download Report",
+    //   subtitle: "Export and download this week report",
+    //   icon: "download",
+    //   path: "/downloadReport",
+    //   color: Colors.primary,
+    // },
     {
       title: "About PinyaXtract",
       subtitle: "Learn more about PinyaXtract and its features",
@@ -127,12 +130,14 @@ const profile = () => {
     };
   }, [uid]); // Depend on `uid` to re-run when it changes
 
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+
   return (
     <>
       {isFetching ? (
         <MenuSkeleton />
       ) : (
-        <SafeAreaView className="flex-1 bg-main">
+        <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
           <ScrollView contentContainerClassName="min-h-full">
             {/* Header */}
             <TabHeader icon={"menu"} title={"Menu"} />
@@ -223,15 +228,35 @@ const profile = () => {
                   </View>
 
                   <View className="flex flex-1 items-end">
-                    <MaterialIcons
+                    {/* <MaterialIcons
                       name={"chevron-right"}
                       size={35}
                       color={Colors.primary}
+                    /> */}
+
+                    <Switch
+                      // className="scale-[1.4]"
+                      trackColor={{
+                        false: Colors.primary,
+                        true: Colors.secondary,
+                      }}
+                      thumbColor={
+                        colorScheme === "dark"
+                          ? Colors.primary
+                          : Colors.secondary
+                      }
+                      ios_backgroundColor={
+                        colorScheme === "dark"
+                          ? Colors.primary
+                          : Colors.secondary
+                      }
+                      onChange={toggleColorScheme}
+                      value={colorScheme === "dark"}
                     />
                   </View>
                 </View>
 
-                <View className="flex flex-row items-center gap-4">
+                {/* <View className="flex flex-row items-center gap-4">
                   <View className="flex h-[35] w-[35] items-center justify-center rounded-full bg-background-alt">
                     <MaterialIcons
                       name={"notifications"}
@@ -256,12 +281,11 @@ const profile = () => {
                       color={Colors.primary}
                     />
                   </View>
-                </View>
+                </View> */}
               </View>
 
               {/* Logout Button */}
-
-              <View className="flex flex-1">
+              <View className="flex">
                 <TouchableOpacity
                   className="rounded-md bg-danger px-3 py-2"
                   onPress={handleLogout}

@@ -8,14 +8,16 @@ const monitor = () => {
   const { machineState, tempValue, weightValue } = useGlobal();
 
   return (
-    <SafeAreaView className="flex-1 bg-main">
+    <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
       <ScrollView contentContainerClassName="flex min-h-full">
         {/* Header */}
         <TabHeader icon={"view-timeline"} title={"Monitor"} />
 
         <View className="mb-5 flex flex-1 justify-center gap-2 px-2.5">
           {/* Machine Status */}
-          <Text className="font-satoshi-bold text-lg">Machine Status</Text>
+          <Text className="font-satoshi-bold text-lg text-dark-text dark:text-light-text">
+            Machine Status
+          </Text>
           <View className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-background p-8">
             {machineState ? (
               <SVG.Extract width={45} height={45} />
@@ -29,7 +31,9 @@ const monitor = () => {
           </View>
 
           {/* Machine Condition */}
-          <Text className="font-satoshi-bold text-lg">Sensor Reading</Text>
+          <Text className="font-satoshi-bold text-lg text-dark-text dark:text-light-text">
+            Sensor Reading
+          </Text>
           <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
             <View className="flex items-center">
               <SVG.Condition width={125} height={105} />

@@ -48,7 +48,9 @@ const _layout = () => {
   }, [segment]);
 
   return (
-    <View className={`flex-1 bg-main ${!isTabScreen ? "hidden" : ""}`}>
+    <View
+      className={`dark:bg-dark-main flex-1 bg-main ${!isTabScreen ? "hidden" : ""}`}
+    >
       <TabHeader icon={"admin-panel-settings"} title={"Admin"} />
       <View className="relative flex-1">
         <Tabs
@@ -85,7 +87,7 @@ const _layout = () => {
                   }}
                 >
                   <Text
-                    className={`font-cabinetGrotesk-medium text-xl ${isFocused ? "text-light-text" : "text-dark-text"}`}
+                    className={`font-cabinetGrotesk-medium text-xl ${isFocused ? "text-light-text" : "text-dark-text dark:text-light-text"}`}
                   >
                     {tabConfig.title}
                   </Text>

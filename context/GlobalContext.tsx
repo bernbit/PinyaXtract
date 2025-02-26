@@ -30,7 +30,7 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   // Extraction Level
   const [extractionLevel, setExtractionLevel] = useState<number>(1);
   // Roller Speed State
-  const [rollerSpeed, setRollerSpeed] = useState<number>(1);
+  const [rollerSpeed, setRollerSpeed] = useState<number>(100);
   // Temperature State
   const [tempValue, setTempValue] = useState<number>(0);
   // Weight State
@@ -80,17 +80,17 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   useEffect(() => {
     const fetchData = () => {
       getAllData((data: FirebaseRTDBType) => {
-        setMachineState(data.Machine);
+        setMachineState(data.Machine || false);
 
-        setTempValue(data.Temperature);
-        setWeightValue(data.Weight);
+        setTempValue(data.Temperature || 0);
+        setWeightValue(data.Weight || 0);
 
-        setRollerSpeed(data.RollerSpeed);
-        setExtractionLevel(data.ExtractionLevel);
-        setFanState(data.Fan);
-        setHeaterState(data.Heater);
-        setHeaterManual(data.HeaterManual);
-        setTimestamps(data.Timestamp);
+        setRollerSpeed(data.RollerSpeed || 100);
+        setExtractionLevel(data.ExtractionLevel || 2);
+        setFanState(data.Fan || false);
+        setHeaterState(data.Heater || "low");
+        setHeaterManual(data.HeaterManual || false);
+        setTimestamps(data.Timestamp || {});
       });
     };
     fetchData();
