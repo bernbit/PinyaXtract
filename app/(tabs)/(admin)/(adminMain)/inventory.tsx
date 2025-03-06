@@ -32,7 +32,7 @@ const inventory = () => {
     });
 
   return (
-    <View className="dark:bg-dark-main flex-1 bg-main">
+    <View className="flex-1 bg-main dark:bg-dark-main">
       {/* Time Picker */}
       {/* <View className="px-4 py-4">
           <View className="flex flex-row gap-2 border border-background/80">
@@ -121,7 +121,7 @@ const inventory = () => {
               </Text>
             </TouchableOpacity>
 
-            <Text className="flex-1 text-center font-satoshi-bold">
+            <Text className="flex-1 text-center font-satoshi-bold text-dark-text dark:text-light-text">
               Page {page}
             </Text>
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, Pressable, Dimensions } from "react-native";
 import { Tabs, useRouter, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -168,11 +168,13 @@ const _layout = () => {
     : tabRoutes.filter((tab) => tab.name !== "(admin)");
   const tabWidth = screenWidth / visibleTabRoutes.length;
 
-  useFocusEffect(() => {
-    if (!isAuthenticated) {
-      router.replace("/");
-    }
-  });
+  useFocusEffect(
+    useCallback(() => {
+      if (!isAuthenticated) {
+        router.replace("/");
+      }
+    }, [isAuthenticated]),
+  );
 
   //Animations
   const indicatorPosition = useSharedValue<number>(0);

@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 
 export interface AuthContextType {
-  isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  isAuthenticated: boolean | null;
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean | null>>;
   isLoading: boolean;
   currentUser?: Record<string, any> | null;
   setCurrentUser?: React.Dispatch<

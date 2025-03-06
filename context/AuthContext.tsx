@@ -12,11 +12,19 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 //* Configure AuthContext
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [currentUser, setCurrentUser] = useState<Record<string, any> | null>(
     null,
   );
   const [isLoading, setIsLoading] = useState<boolean>(true); // Track loading state
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -42,10 +50,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     getCurrentUser();
   }, []);
 
-  // !Important
-  if (isLoading) {
-    return <Loader />;
-  }
+  // // !Important
+  // if (isLoading || isAuthenticated === null) {
+  //   return <Loader />;
+  // }
 
   const value = {
     isAuthenticated,
@@ -55,7 +63,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setCurrentUser,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {isLoading ? <Loader /> : children}
+    </AuthContext.Provider>
+  );
 }
 
 //* Create Custom Hook- useAuth

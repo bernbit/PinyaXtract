@@ -30,7 +30,7 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   // Extraction Level
   const [extractionLevel, setExtractionLevel] = useState<number>(1);
   // Roller Speed State
-  const [rollerSpeed, setRollerSpeed] = useState<number>(100);
+  const [rollerSpeed, setRollerSpeed] = useState<number>(0);
   // Temperature State
   const [tempValue, setTempValue] = useState<number>(0);
   // Weight State
@@ -43,11 +43,21 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
 
   //! Functions
   // Machine Function
-  const toggleMachineState = () =>
+  const toggleMachineState = () => {
     setMachineState((prevState) => {
-      writeData(Path.Machine, !prevState);
-      return !prevState;
+      const newState = !prevState;
+      writeData(Path.Machine, newState);
+
+      if (!newState) {
+        setFanState(false);
+        setHeaterState("off");
+        writeData(Path.Fan, false);
+        writeData(Path.Heater, "off");
+      }
+
+      return newState;
     });
+  };
   //Heater Functions
   const toggleHeaterState_Switch = (value: string) => {
     const valParse = value.toLowerCase();
@@ -80,16 +90,16 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   useEffect(() => {
     const fetchData = () => {
       getAllData((data: FirebaseRTDBType) => {
-        setMachineState(data.Machine || false);
+        // setMachineState(data.Machine || false);
 
         setTempValue(data.Temperature || 0);
         setWeightValue(data.Weight || 0);
 
-        setRollerSpeed(data.RollerSpeed || 100);
-        setExtractionLevel(data.ExtractionLevel || 2);
-        setFanState(data.Fan || false);
-        setHeaterState(data.Heater || "low");
-        setHeaterManual(data.HeaterManual || false);
+        setRollerSpeed(data.RollerSpeed || 0);
+        // setExtractionLevel(data.ExtractionLevel || 0);
+        // setFanState(data.Fan || false);
+        // setHeaterState(data.Heater || "low");
+        // setHeaterManual(data.HeaterManual || false);
         setTimestamps(data.Timestamp || {});
       });
     };

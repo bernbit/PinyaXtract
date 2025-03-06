@@ -29,7 +29,7 @@ const index = () => {
   } = useGlobal();
 
   return (
-    <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
+    <SafeAreaView className="flex-1 bg-main dark:bg-dark-main">
       <ScrollView contentContainerClassName="flex min-h-full">
         {/* Header */}
         <TabHeader icon={"settings-remote"} title={"Control"} />
@@ -85,7 +85,9 @@ const index = () => {
             </View> */}
 
             {/* Roller Speed */}
-            <View className="flex flex-1 justify-center gap-5 rounded-lg bg-background py-9">
+            <View
+              className={`flex flex-1 justify-center gap-5 rounded-lg bg-background py-9 ${!machineState ? "pointer-events-none" : ""}`}
+            >
               <View className="flex items-center">
                 <Roller width={145} height={110} />
               </View>
@@ -107,7 +109,9 @@ const index = () => {
             </View>
           </View>
 
-          <View className="flex flex-1 flex-row gap-2 rounded-lg">
+          <View
+            className={`flex flex-1 flex-row gap-2 rounded-lg ${!machineState ? "pointer-events-none" : ""}`}
+          >
             {/* Fan Switch */}
             <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
               <View className="mt-4 flex items-center">
@@ -137,7 +141,7 @@ const index = () => {
             <View className="flex flex-1 justify-center gap-4 rounded-lg bg-background py-9">
               <View className="absolute right-0 top-1 m-0 flex w-full flex-1 flex-row items-center justify-between px-2">
                 <Text className="px-2 font-satoshi-bold text-light-text">
-                  {heaterManual ? "Manual" : "Auto"}
+                  {heaterManual ? "M" : "A"}
                 </Text>
 
                 <Switch
@@ -162,7 +166,7 @@ const index = () => {
                 <TripleSwitch />
 
                 <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
-                  {heaterState === "off" ? "Heater Off" : "Heater On"}
+                  {heaterManual ? "Manual Mode" : "Auto Mode"}
                 </Text>
               </View>
             </View>

@@ -8,7 +8,7 @@ const monitor = () => {
   const { machineState, tempValue, weightValue } = useGlobal();
 
   return (
-    <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
+    <SafeAreaView className="flex-1 bg-main dark:bg-dark-main">
       <ScrollView contentContainerClassName="flex min-h-full">
         {/* Header */}
         <TabHeader icon={"view-timeline"} title={"Monitor"} />
@@ -73,7 +73,7 @@ const monitor = () => {
               </View>
               <View className="flex items-center justify-end">
                 <Text className="font-satoshi-bold text-2xl text-light-text">
-                  {weightValue}
+                  {weightValue.toFixed(2)}
                   <Text className="text-lg">kg</Text>
                 </Text>
                 <Text className="font-cabinetGrotesk-medium text-lg text-light-text">

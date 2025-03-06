@@ -1,17 +1,33 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Stack, useRouter, useFocusEffect } from "expo-router";
 import { Colors } from "@/constants/Colors-Constants";
 import useAuth from "@/context/AuthContext";
+import { View } from "react-native";
+
+import Loader from "@/components/Loader";
 
 const _layout = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
-  useFocusEffect(() => {
-    if (isAuthenticated) {
-      router.replace("/control");
+  useEffect(() => {
+    if (isAuthenticated !== null) {
+      setIsLoading(false);
     }
-  });
+  }, [isAuthenticated]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isAuthenticated) {
+        router.replace("/control");
+      }
+    }, [isAuthenticated]),
+  );
+
+  if (isLoading) {
+    return <View className="bg-background"></View>;
+  }
 
   return (
     <Stack>

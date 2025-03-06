@@ -74,7 +74,7 @@ const profile = () => {
     // },
     {
       title: "About PinyaXtract",
-      subtitle: "Learn more about PinyaXtract and its features",
+      subtitle: "Learn more about PinyaXtract",
       icon: "info",
       path: "/about",
       color: Colors.primary,
@@ -137,7 +137,7 @@ const profile = () => {
       {isFetching ? (
         <MenuSkeleton />
       ) : (
-        <SafeAreaView className="dark:bg-dark-main flex-1 bg-main">
+        <SafeAreaView className="flex-1 bg-main dark:bg-dark-main">
           <ScrollView contentContainerClassName="min-h-full">
             {/* Header */}
             <TabHeader icon={"menu"} title={"Menu"} />
@@ -250,7 +250,7 @@ const profile = () => {
                           ? Colors.primary
                           : Colors.secondary
                       }
-                      onChange={toggleColorScheme}
+                      onValueChange={toggleColorScheme}
                       value={colorScheme === "dark"}
                     />
                   </View>

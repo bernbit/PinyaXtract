@@ -3,7 +3,7 @@ export interface FirebaseRTDBType {
   ExtractionLevel: number;
   Fan: boolean;
   Heater: string;
-  HeaterManual: boolean;
+  // HeaterManual: boolean;
   Machine: boolean;
   RollerSpeed: number;
   Temperature: number;
