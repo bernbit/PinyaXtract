@@ -38,5 +38,6 @@ yarn-error.*
 app-example
 backup
 google-services
+pinyaxtract-private-key.json
 /ios
 /android

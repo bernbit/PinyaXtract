@@ -11,6 +11,7 @@ const Path = {
   Heater: "/Heater",
   HeaterManual: "/HeaterManual",
   Timestamp: "/Timestamp",
+  Blade: "/Blade",
 };
 
 //* Create a Context
@@ -40,6 +41,8 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
   const [timestamps, setTimestamps] = useState<Record<string, any>>({});
   //Expo Push Token
   const [expoPushToken, setExpoPushToken] = useState<string>("");
+  // Blade State
+  const [bladeState, setBladeState] = useState(false);
 
   //! Functions
   // Machine Function
@@ -86,21 +89,29 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
       return !prevState;
     });
 
+  // Blade Function
+  const toggleBladeState = () =>
+    setBladeState((prevState) => {
+      writeData(Path.Blade, !prevState);
+      return !prevState;
+    });
+
   //! useEffects
   useEffect(() => {
     const fetchData = () => {
       getAllData((data: FirebaseRTDBType) => {
-        // setMachineState(data.Machine || false);
+        setMachineState(data.Machine || false);
 
         setTempValue(data.Temperature || 0);
         setWeightValue(data.Weight || 0);
 
         setRollerSpeed(data.RollerSpeed || 0);
-        // setExtractionLevel(data.ExtractionLevel || 0);
-        // setFanState(data.Fan || false);
-        // setHeaterState(data.Heater || "low");
-        // setHeaterManual(data.HeaterManual || false);
+        setExtractionLevel(data.ExtractionLevel || 0);
+        setFanState(data.Fan || false);
+        setHeaterState(data.Heater || "low");
+        setHeaterManual(data.HeaterManual || false);
         setTimestamps(data.Timestamp || {});
+        setBladeState(data.Blade || false);
       });
     };
     fetchData();
@@ -145,6 +156,10 @@ export function GlobalProvider({ children }: GlobalProviderProps) {
 
     expoPushToken,
     setExpoPushToken,
+
+    bladeState,
+    setBladeState,
+    toggleBladeState,
   };
 
   return (

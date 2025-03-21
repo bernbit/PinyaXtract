@@ -14,6 +14,9 @@ import WeightMeter from "@/assets/svg/WeightMeter";
 import Overheat from "@/assets/svg/Overheat";
 import Stable from "@/assets/svg/Stable";
 import Warming from "@/assets/svg/Warming";
+import Blade from "@/assets/svg/Blade";
+import XLSIcon from "@/assets/svg/XLSIcon";
+import PDFIcon from "@/assets/svg/PDFIcon";
 
 const SVG = {
   Logo,
@@ -32,6 +35,9 @@ const SVG = {
   Overheat,
   Stable,
   Warming,
+  Blade,
+  XLSIcon,
+  PDFIcon,
 };
 
 export default SVG;

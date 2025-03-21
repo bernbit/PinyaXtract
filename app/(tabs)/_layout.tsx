@@ -112,7 +112,7 @@ const _layout = () => {
         await Notifications.getExpoPushTokenAsync({ projectId })
       ).data;
 
-      console.log("Push Token:", pushTokenString);
+      // console.log("Push Token:", pushTokenString);
       return pushTokenString;
     } catch (error) {
       handleRegistrationError(`Error registering for notifications: ${error}`);

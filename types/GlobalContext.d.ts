@@ -40,6 +40,10 @@ export interface GlobalContextType {
 
   expoPushToken: string;
   setExpoPushToken: React.Dispatch<React.SetStateAction<string>>;
+
+  bladeState: boolean;
+  setBladeState: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleBladeState: () => void;
 }
 
 interface GlobalProviderProps {

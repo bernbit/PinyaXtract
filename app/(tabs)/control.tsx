@@ -9,6 +9,7 @@ import Fan from "@/assets/svg/Fan";
 import Gear from "@/assets/svg/Gear";
 import Compress from "@/assets/svg/Compress";
 import Roller from "@/assets/svg/Roller";
+import Blade from "@/assets/svg/Blade";
 
 import { Colors } from "@/constants/Colors-Constants";
 import useGlobal from "@/context/GlobalContext";
@@ -26,6 +27,8 @@ const index = () => {
     setExtractionLevel,
     rollerSpeed,
     setRollerSpeed,
+    bladeState,
+    toggleBladeState,
   } = useGlobal();
 
   return (
@@ -83,6 +86,33 @@ const index = () => {
                 </Text>
               </View>
             </View> */}
+
+            {/* Blade Switch */}
+            <View
+              className={`flex flex-1 justify-center gap-5 rounded-lg bg-background py-9 ${!machineState ? "pointer-events-none" : ""}`}
+            >
+              <View className="flex items-center">
+                <Blade width={100} height={100} />
+              </View>
+              <View className="flex items-center justify-end gap-3">
+                <Switch
+                  className="scale-[1.4]"
+                  trackColor={{
+                    false: Colors.primary,
+                    true: Colors.secondary,
+                  }}
+                  thumbColor={bladeState ? Colors.primary : Colors.secondary}
+                  ios_backgroundColor={
+                    bladeState ? Colors.primary : Colors.secondary
+                  }
+                  onValueChange={toggleBladeState}
+                  value={bladeState}
+                />
+                <Text className="font-cabinetGrotesk-medium text-lg text-light-text">
+                  {bladeState ? "Blade On" : "Blade Off"}
+                </Text>
+              </View>
+            </View>
 
             {/* Roller Speed */}
             <View

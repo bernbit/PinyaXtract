@@ -3,13 +3,14 @@ export interface FirebaseRTDBType {
   ExtractionLevel: number;
   Fan: boolean;
   Heater: string;
-  // HeaterManual: boolean;
+  HeaterManual: boolean;
   Machine: boolean;
   RollerSpeed: number;
   Temperature: number;
   Timestamp: Record<string, number>;
   Weight: number;
   rollerSpeed: number;
+  Blade: boolean;
 }
 
 interface FirestoreUserDataType {

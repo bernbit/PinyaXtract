@@ -65,13 +65,13 @@ const profile = () => {
       color: Colors.primary,
     },
 
-    // {
-    //   title: "Download Report",
-    //   subtitle: "Export and download this week report",
-    //   icon: "download",
-    //   path: "/downloadReport",
-    //   color: Colors.primary,
-    // },
+    {
+      title: "Download Report",
+      subtitle: "Export and download this week report",
+      icon: "download",
+      path: "/downloadReport",
+      color: Colors.primary,
+    },
     {
       title: "About PinyaXtract",
       subtitle: "Learn more about PinyaXtract",
@@ -109,8 +109,6 @@ const profile = () => {
       console.log("No UID Available");
       return;
     }
-
-    console.log("Listening for User Data Changes", uid);
 
     // Subscribe to real-time updates
     const unsubscribe = getUserDataRealtime(uid, (newUserData) => {

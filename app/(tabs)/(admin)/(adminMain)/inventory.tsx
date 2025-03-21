@@ -3,12 +3,13 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors-Constants";
 import useGlobal from "@/context/GlobalContext";
+import { serializer } from "@/metro.config";
 
 const PAGE_SIZE = 10; // Number of rows per page
 
 const inventory = () => {
   const { timestamps } = useGlobal();
-  const timeKeys: string[] = Object.keys(timestamps);
+  const timeKeys: string[] = Object.keys(timestamps).reverse();
   const [page, setPage] = useState<number>(1);
 
   // Pagination Calculations
@@ -115,6 +116,7 @@ const inventory = () => {
               className={`rounded-md px-3 py-2 ${page === 1 ? "bg-background/45" : "bg-background"}`}
               disabled={page === 1}
               onPress={() => setPage(page - 1)}
+              onLongPress={() => setPage(1)}
             >
               <Text className="font-satoshi-medium text-lg text-light-text">
                 Previous
@@ -129,6 +131,9 @@ const inventory = () => {
               className={`rounded-md bg-background px-3 py-2 ${endIndex >= timeKeys.length ? "bg-background/45" : "bg-background"}`}
               disabled={endIndex >= timeKeys.length}
               onPress={() => setPage(page + 1)}
+              onLongPress={() =>
+                setPage(Math.ceil(timeKeys.length / PAGE_SIZE))
+              }
             >
               <Text className="font-satoshi-medium text-lg text-light-text">
                 Next
